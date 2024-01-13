@@ -4,14 +4,14 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "Your Page Title\n\n\n\n\nH E L L O ;\n\n\nI am Rachel Yee. Data Analyst and Visualization Specialist."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "ISSS608-VAA",
     "section": "",
-    "text": "Welcome to ISSS608 Visual Analytics and Applications homepage. In this website, you will find my coursework prepared for this course."
+    "text": "Welcome to my Visual Analytics Portfolio. In this website, you will find my coursework prepared for this course."
   },
   {
     "objectID": "Hands-On_Ex/Hands-on_Ex01/Hands-On_Ex01.html",
@@ -53,7 +53,7 @@
     "href": "Hands-On_Ex/Hands-on_Ex01/Hands-On_Ex01.html#a-layered-grammar-of-graphics",
     "title": "Hands-On Exercise 1: A Layered Grammar of Graphics: ggplot2 methods",
     "section": "A Layered Grammar of Graphics",
-    "text": "A Layered Grammar of Graphics\nggplot2 is an implementation of Leland Wilkinson’s Grammar of Graphics. The seven grammars of ggplot2 are shown in the figure below.\n\nReference: Hadley Wickham (2010) \"A layered grammar of graphics.\" Journal of Computational and Graphical Statistics, vol. 19, no. 1, pp. 3–28.\nA short description of each building block are as follows:\n\nData: The dataset being plotted.\nAesthetics take attributes of the data and use them to influence visual characteristics, such as position, colors, size, shape, or transparency.\nGeometries: The visual elements used for our data, such as point, bar or line.\nFacets split the data into subsets to create multiple variations of the same graph (paneling, multiple plots).\nStatistics: statistical transformations that summarizes data (e.g. mean, confidence intervals).\nCoordinate systems define the plane on which data are mapped on the graphic.\nThemes modify all non-data components of a plot, such as main title, sub-title, y-axis title, or legend background."
+    "text": "A Layered Grammar of Graphics\nggplot2 is an implementation of Leland Wilkinson’s Grammar of Graphics. The seven grammars of ggplot2 are shown in the figure below.\n\nReference: Hadley Wickham (2010) “A layered grammar of graphics.” Journal of Computational and Graphical Statistics, vol. 19, no. 1, pp. 3–28.\nA short description of each building block are as follows:\n\nData: The dataset being plotted.\nAesthetics take attributes of the data and use them to influence visual characteristics, such as position, colors, size, shape, or transparency.\nGeometries: The visual elements used for our data, such as point, bar or line.\nFacets split the data into subsets to create multiple variations of the same graph (paneling, multiple plots).\nStatistics: statistical transformations that summarizes data (e.g. mean, confidence intervals).\nCoordinate systems define the plane on which data are mapped on the graphic.\nThemes modify all non-data components of a plot, such as main title, sub-title, y-axis title, or legend background."
   },
   {
     "objectID": "Hands-On_Ex/Hands-on_Ex01/Hands-On_Ex01.html#geometric-objects-geom_bar",

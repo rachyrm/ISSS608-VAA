@@ -35,7 +35,7 @@ exam_data <- read_csv("data/Exam_data.csv", show_col_types = FALSE)
 
 -   *Without '**show_col_types = FALSE**', the message below will be shown*
 
-![](images/Screenshot 2024-01-12 011700.png)
+![](images/Screenshot%202024-01-12%20011700.png)
 
 # Introduction of ggplot
 
@@ -86,7 +86,7 @@ ggplot2 is an implementation of Leland Wilkinson's Grammar of Graphics. The seve
 
 ![](https://r4va.netlify.app/chap01/img/image4.jpg)
 
-Reference: Hadley Wickham (2010) [\"A layered grammar of graphics.\"](https://vita.had.co.nz/papers/layered-grammar.html) *Journal of Computational and Graphical Statistics*, vol. 19, no. 1, pp. 3--28.
+Reference: Hadley Wickham (2010) ["A layered grammar of graphics."](https://vita.had.co.nz/papers/layered-grammar.html) *Journal of Computational and Graphical Statistics*, vol. 19, no. 1, pp. 3--28.
 
 A short description of each building block are as follows:
 

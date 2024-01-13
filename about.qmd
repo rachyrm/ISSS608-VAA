@@ -1,9 +1,1 @@
----
-title: "About"
----
-
-About this site
-
-```{r}
-1 + 1
-```
+![](images/Screenshot 2024-01-12 175020.png){fig-align="center" width="750"}

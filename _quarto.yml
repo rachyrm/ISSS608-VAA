@@ -2,17 +2,25 @@ project:
   type: website
 
 website:
-  title: "ISSS608-VAA"
+  title: "Visual Analytics and Applications"
   navbar:
     left:
-    - text: "Hands-On Exercise"
+    - text: "Hands-On Exercises"
       menu:
       - text: "Hands-On Exercise 1"
         href: "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html"
+    - text: "In-Class Exercises"
+      menu:
+      - text: "In-Class Exercise 1"
+        href: "In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html"
+    - text: "Take-home Exercises"
+      menu:
+      - text: "Take-home Exercise 1"
     right:
     - href: index.qmd
       text: Home
-    - about.qmd
+    - href: about.qmd
+      text: About
     
 format:
   html:
