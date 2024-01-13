@@ -12,7 +12,7 @@ website:
     - text: "In-Class Exercises"
       menu:
       - text: "In-Class Exercise 1"
-        href: "In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html"
+        href: "In-Class_Ex/In-Class_Ex_01/In-Class_Ex01.html"
     - text: "Take-home Exercises"
       menu:
       - text: "Take-home Exercise 1"
