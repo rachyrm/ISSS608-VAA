@@ -21,12 +21,15 @@ In this chapter, I will delve into various ggplot2 extensions, including the too
 
 In this exercise, beside tidyverse, four R packages will be used. They are:
 
-|                |                                                                      |
-|:--------------:|----------------------------------------------------------------------|
-|  **ggrepel**   | provides geoms for ggplot2 to repel overlapping text labels.         |
-|  **ggthemes**  | provides some extra themes, geoms, and scales for 'ggplot2'.         |
++:--------------:+----------------------------------------------------------------------+
+| **ggrepel**    | provides geoms for ggplot2 to repel overlapping text labels.         |
++----------------+----------------------------------------------------------------------+
+| **ggthemes**   | provides some extra themes, geoms, and scales for 'ggplot2'.         |
++----------------+----------------------------------------------------------------------+
 | **hrbrthemes** | provides typography-centric themes and theme components for ggplot2. |
++----------------+----------------------------------------------------------------------+
 | **patchwork**  | for preparing composite figure created using ggplot2.                |
++----------------+----------------------------------------------------------------------+
 
 ```{r}
 pacman::p_load(ggrepel, patchwork, 
@@ -60,11 +63,28 @@ There are a total of seven attributes in the exam_data tibble data frame.
 # Beyond ggplot2 Annotation: ggrepel
 
 ::: panel-tabset
-## The plot
-
-## The code
+## The Plot
 
 ```{r}
+#| echo: false
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label(aes(label = ID), 
+             hjust = .5, 
+             vjust = -.5) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+## The Code
+
+```{r}
+#| eval: false
 ggplot(data=exam_data, 
        aes(x= MATHS, 
            y=ENGLISH)) +
@@ -93,11 +113,27 @@ By replacing the following:
 visualization is clearer.
 
 ::: panel-tabset
-## The plot
-
-## The code
+## The Plot
 
 ```{r}
+#| echo: false
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label_repel(aes(label = ID), 
+                   fontface = "bold") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+## The Code
+
+```{r}
+#| eval: false
 ggplot(data=exam_data, 
        aes(x= MATHS, 
            y=ENGLISH)) +
@@ -111,3 +147,409 @@ ggplot(data=exam_data,
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
 :::
+
+# Beyond ggplot2 Themes
+
+ggplot2 comes with 8 built-in themes which are:
+
++:-----------------:+:--------------------:+:-------------------:+:----------------:+
+| -   theme_gray()  | -   theme_bw()       | -   theme_classic() | -   theme_dark() |
++-------------------+----------------------+---------------------+------------------+
+| -   theme_light() | -   theme_linedraw() | -   theme_minimal() | -   theme_void() |
++-------------------+----------------------+---------------------+------------------+
+
+This [link](https://ggplot2.tidyverse.org/reference/#themes) provides more information about this. The graph and code chunk below shows the visualization in theme_gray().
+
+::: panel-tabset
+## The Plot 
+
+```{r}
+#| echo: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  theme_gray() +
+  ggtitle("Distribution of Maths scores") 
+```
+
+## The Code
+
+```{r}
+#| eval: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  theme_gray() +
+  ggtitle("Distribution of Maths scores") 
+```
+:::
+
+## Working with ggtheme package
+
+[ggthemes](https://cran.r-project.org/web/packages/ggthemes/) provide **'[ggplot2' themes](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/)** that replicate the look of plots by Edward Tufte, Stephen Few, Fivethirtyeight, The Economist, \'Stata\', \'Excel\', and The Wall Street Journal, among others.
+
+In the example below, *The Economist* theme is used. It also provides some extra geoms and scales for \'ggplot2\'. Consult [this vignette](#0) to learn more.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_economist()
+```
+
+## The Code
+
+```{r}
+#| eval: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_economist()
+```
+:::
+
+## Working with hrbthems package
+
+The [hrbrthemes](https://cinc.rud.is/web/packages/hrbrthemes/) package offers a foundational design for graphics that pays attention to text-related elements, like where labels are positioned and the choice of fonts. In simpler terms, it provides a style template for your plots with a focus on how text looks and where it is located on the graph.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| warning: false
+#| echo: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum()
+```
+
+## The Code
+
+```{r}
+#| eval: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum()
+```
+:::
+
+The second objective is all about making work more efficient in a production workflow. Essentially, the context for using the elements of **hrbrthemes** is within this workflow, where you're creating and producing things. In the next code chunk, the following will be done:
+
+-   axis_title_size argument is used to increase the font size of the axis title to 18,
+
+-   base_size argument is used to increase the default axis label to 15, and
+
+-   grid argument is used to remove the x-axis grid lines.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| warning: false
+#| echo: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum(axis_title_size = 18,
+              base_size = 15,
+              grid = "Y")
+```
+
+## The Code
+
+```{r}
+#| eval: false
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum(axis_title_size = 18,
+              base_size = 15,
+              grid = "Y")
+```
+:::
+
+# Beyond Single Graph
+
+It's common to need multiple graphs to convey a compelling visual narrative. Various ggplot2 extensions offer tools to put together a figure with multiple graphs. In this part, I will show how a combined plot is made by bringing together three statistical graphics.
+
+-   **First:**
+
+::: panel-tabset
+## The Plot
+
+```{r}
+p1 <- ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") + 
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of Maths scores")
+p1
+```
+
+## The Code
+
+```{r}
+#| eval: false
+p1 <- ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") + 
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of Maths scores")
+```
+:::
+
+-   **Second**:
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+p2 <- ggplot(data=exam_data, 
+             aes(x = ENGLISH)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of English scores")
+p2
+```
+
+## The Code
+
+```{r}
+#| eval: false
+p2 <- ggplot(data=exam_data, 
+             aes(x = ENGLISH)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of English scores")
+```
+:::
+
+-    **Lastly**, a scatterplot for English score versus Maths score:
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+p3 <- ggplot(data=exam_data, 
+             aes(x= MATHS, 
+                 y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+p3
+```
+
+## The Code
+
+```{r}
+#| eval: false
+p3 <- ggplot(data=exam_data, 
+             aes(x= MATHS, 
+                 y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+:::
+
+## Creating Composite Graphics: pathwork methods
+
+Several functions in ggplot2 extensions help prepare composite figures by combining multiple graphs. Examples include \`[grid.arrange()](https://cran.r-project.org/web/packages/gridExtra/vignettes/arrangeGrob.html)\` in the **gridExtra** package and \`[plot_grid()](https://wilkelab.org/cowplot/reference/plot_grid.html)\` in the [cowplot](https://wilkelab.org/cowplot/) package. In this section, an introduction to a ggplot2 extension called [patchwork](https://patchwork.data-imaginist.com/), specifically designed for merging separate ggplot2 graphs into a single figure, will be shown.
+
+The **patchwork** package has a straightforward syntax for creating layouts, which can easily make:
+
+-   A two-column layout using the plus sign \`+\`.
+
+-   Subplot groups using parentheses \`()\`.
+
+-   A two-row layout using the division sign \`/\`.
+
+## Combining two ggplot2 graphs
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+p1 + p2
+```
+
+## The Code
+
+```{r}
+#| eval: false
+p1 + p2
+```
+:::
+
+## Combining three ggplot2 graphs
+
+More complex composite figures can be created by using suitable operators. For instance, the composite figure below is plotted using the following operators:
+
+\- The "\|" operator to stack two ggplot2 graphs.
+
+\- The "/" operator to place the plots beside each other.
+
+\- The "()" operator to define the sequence of the plotting.
+
+This [link](https://patchwork.data-imaginist.com/articles/guides/assembly.html) provides more information.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+(p1 / p2) | p3
+```
+
+## The Code
+
+```{r}
+#| eval: false
+(p1 / p2) | p3
+```
+:::
+
+## Creating a composite figure with tag
+
+In order to identify subplots in text, **patchwork** also provides auto-tagging capabilities as shown in the figure below.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+((p1 / p2) | p3) + 
+  plot_annotation(tag_levels = 'I')
+```
+
+## The Code
+
+```{r}
+#| eval: false
+((p1 / p2) | p3) + 
+  plot_annotation(tag_levels = 'I')
+```
+:::
+
+## Creating figure with insert
+
+Beside providing functions to place plots next to each other based on the provided layout. With inset_element() of **patchwork**, one or several plots or graphic elements can be placed freely on top or below another plot.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+p3 + inset_element(p2, 
+                   left = 0.02, 
+                   bottom = 0.7, 
+                   right = 0.5, 
+                   top = 1)
+```
+
+## The Code
+
+```{r}
+#| eval: false
+p3 + inset_element(p2, 
+                   left = 0.02, 
+                   bottom = 0.7, 
+                   right = 0.5, 
+                   top = 1)
+```
+:::
+
+## Creating a composite figure by using patchwork and ggtheme
+
+The figure below is created by combining patchwork and theme_economist() of ggthemes package discussed earlier.
+
+::: panel-tabset
+## The Plot
+
+```{r}
+#| echo: false
+patchwork <- (p1 / p2) | p3
+patchwork & theme_economist()
+```
+
+## The Code
+
+```{r}
+#| eval: false
+patchwork <- (p1 / p2) | p3
+patchwork & theme_economist()
+```
+:::
+
+# References
+
+-   [Patchwork R package goes nerd viral](https://www.littlemissdata.com/blog/patchwork)
+
+-   [ggrepel](https://ggrepel.slowkow.com/)
+
+-   [ggthemes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+
+-   [hrbrthemes](https://cinc.rud.is/web/packages/hrbrthemes/)
+
+-   [ggplot tips: Arranging plots](https://albert-rapp.de/post/2021-10-28-extend-plot-variety/)
+
+-   [ggplot2 Theme Elements Demonstration](https://henrywang.nl/ggplot2-theme-elements-demonstration/)
+
+-   [ggplot2 Theme Elements Reference Sheet](https://isabella-b.com/blog/ggplot2-theme-elements-reference/)
