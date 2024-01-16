@@ -1,0 +1,113 @@
+---
+title: "Hands-on Exercise 2: Beyond ggplot2 Fundamentals"
+author: "Rachel Yee"
+date: "11 January 2024"
+date-modified: "last-modified"
+---
+
+# Learning Objectives
+
+In this chapter, I will delve into various ggplot2 extensions, including the tools to craft more sophisticated and impactful statistical graphics. The goals of this exercise is to:
+
+1.  control the placement of annotation on a graph by using functions provided in ggrepel package,
+
+2.  create professional publication quality figure by using functions provided in ggthemes and hrbrthemes packages,
+
+3.  plot composite figure by combining ggplot2 graphs by using patchwork package.
+
+# Getting Started
+
+## Installing and importing R packages
+
+In this exercise, beside tidyverse, four R packages will be used. They are:
+
+|                |                                                                      |
+|:--------------:|----------------------------------------------------------------------|
+|  **ggrepel**   | provides geoms for ggplot2 to repel overlapping text labels.         |
+|  **ggthemes**  | provides some extra themes, geoms, and scales for 'ggplot2'.         |
+| **hrbrthemes** | provides typography-centric themes and theme components for ggplot2. |
+| **patchwork**  | for preparing composite figure created using ggplot2.                |
+
+```{r}
+pacman::p_load(ggrepel, patchwork, 
+               ggthemes, hrbrthemes,
+               tidyverse) 
+```
+
+## Importing the data
+
+In this exercise, I will work with a file named Exam_data. This file contains the year-end examination grades of a group of primary 3 students from a local school, and it's saved in a format called CSV. To bring this data into R, we use a piece of code. This code uses a function called read_csv() from a package called readr, which is part of a collection of packages known as tidyverse.
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+There are a total of seven attributes in the exam_data tibble data frame.
+
+| Categorical Attributes |
+|:----------------------:|
+|           ID           |
+|         CLASS          |
+|         GENDER         |
+|          RACE          |
+
+| Continuous Attributes |
+|:---------------------:|
+|         MATHS         |
+|        ENGLISH        |
+|        SCIENCE        |
+
+# Beyond ggplot2 Annotation: ggrepel
+
+::: panel-tabset
+## The plot
+
+## The code
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label(aes(label = ID), 
+             hjust = .5, 
+             vjust = -.5) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+:::
+
+**ggrepel** is an extension of **ggplot2** package which provides geoms for **ggplot2** to repel overlapping text as shown above.
+
+## Using ggrepel
+
+By replacing the following:
+
+-   geom_text() with geom_text_repel(), and
+
+-   geom_label() with geom_label_repel(),
+
+visualization is clearer.
+
+::: panel-tabset
+## The plot
+
+## The code
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label_repel(aes(label = ID), 
+                   fontface = "bold") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+:::
