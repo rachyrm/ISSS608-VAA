@@ -60,6 +60,7 @@ In this hands-on exercise, the *Data* worksheet from *GlobalPopulation* Excel wo
 Write a code chunk to import Data worksheet from GlobalPopulation Excel workbook by using appropriate R package from tidyverse family.
 
 ```{r}
+#| eval: false
 col <- c("Country", "Continent")
 globalPop <- read_xls("data/GlobalPopulation.xls",
                       sheet="Data") %>%
