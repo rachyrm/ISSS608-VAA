@@ -3,6 +3,8 @@ title: "Hands-on Exercise 3B: Programming Animated Statistical Graphics with R"
 author: "Rachel Yee"
 date: "23 January 2024"
 date-modified: "last-modified"
+execute:
+  warning: false
 ---
 
 
