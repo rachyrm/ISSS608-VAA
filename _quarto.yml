@@ -2,8 +2,16 @@ project:
   type: website
 
 website:
-  title: "Visual Analytics and Applications"
+  title: "Rach's Visual Portfolio"
+  image: "images/title1.png"
+  favicon: "images/title1.png"
+  page-navigation: true
+  
   navbar:
+    logo: "images/title1.png"
+    title: false
+    collapse-below: lg
+    search: true
     left:
     - text: "Hands-On Exercises"
       menu:
@@ -23,17 +31,31 @@ website:
       menu:
       - text: "Take-Home Exercise 1"
         href: "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html"
+      - text: "Take-Home Exercise 2"
+        href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
     right:
-    - href: index.qmd
-      text: Home
-    - href: about.qmd
-      text: About
+    - icon: house
+      href: https://isss608-rachyrm.netlify.app/
+      aria-label: Home
+    - icon: person-lines-fill
+      href: https://isss608-rachyrm.netlify.app/about
+      aria-label: About
+    - icon: github
+      href: https://github.com/rachyrm/ISSS608-VAA
+      aria-label: GitHub
+    - icon: linkedin
+      href: https://www.linkedin.com/in/rachelyrm/
+      aria-label: LinkedIn
     
 format:
   html:
-    theme: minty
+    theme: 
+      - minty
+      - theme.scss
+    highlight-style: kate
+    code-copy: hover
+    code-overflow: wrap
     css: styles.css
     toc: true
 
 editor: visual
-

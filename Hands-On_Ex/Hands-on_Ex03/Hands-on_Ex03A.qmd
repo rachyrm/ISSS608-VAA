@@ -3,6 +3,7 @@ title: "Hands-on Exercise 3A: Programming Interactive Data Visualisation with R"
 author: "Rachel Yee"
 date: "23 January 2024"
 date-modified: "last-modified"
+tbl-colwidths: [25,75]
 ---
 
 # Learning Objectives
@@ -19,17 +20,13 @@ This exercise will focus on creating interactive data visualisation by using fun
 
 In this exercise, the following R packages will be used:
 
-+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -   [**ggiraph**](https://davidgohel.github.io/ggiraph/)   | -   for making 'ggplot' graphics interactive                                                                                                               |
-+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -   [**plotly**](https://plotly.com/r/)                    | -   for plotting interactive statistical graphs                                                                                                            |
-+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -   [**DT**](https://rstudio.github.io/DT/)                | -   provides an R interface to the JavaScript library [DataTables](https://datatables.net/) that create interactive table on html page                     |
-+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -   [**tidyverse**](https://www.tidyverse.org/)            | -   a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs |
-+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -   [**patchwork**](https://patchwork.data-imaginist.com/) | -   for combining multiple ggplot2 graphs into one figure                                                                                                  |
-+------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Packages                                               | Description                                                                                                                                            |
+|:--------------------|:--------------------------------------------------|
+| [**ggiraph**](https://davidgohel.github.io/ggiraph/)   | for making 'ggplot' graphics interactive                                                                                                               |
+| [**plotly**](https://plotly.com/r/)                    | for plotting interactive statistical graphs                                                                                                            |
+| [**DT**](https://rstudio.github.io/DT/)                | provides an R interface to the JavaScript library [DataTables](https://datatables.net/) that create interactive table on html page                     |
+| [**tidyverse**](https://www.tidyverse.org/)            | a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs |
+| [**patchwork**](https://patchwork.data-imaginist.com/) | for combining multiple ggplot2 graphs into one figure                                                                                                  |
 
 ```{r}
 pacman::p_load(ggiraph, plotly, patchwork, DT, tidyverse) 
@@ -43,9 +40,9 @@ In this exercise, I will work with a file named Exam_data. The below code uses a
 exam_data <- read_csv("data/Exam_data.csv")
 ```
 
-# Interactive Data Visualisation - ggiraph methods
+# ggiraph methods
 
-[ggiraph](https://davidgohel.github.io/ggiraph/) is an htmlwidget and a ggplot2 extension. It allows ggplot graphics to be interactive.
+[ggiraph](https://davidgohel.github.io/ggiraph/) is an htmlwidget and a ggplot2 extension which allows ggplot graphics to be interactive.
 
 Interactive is made with [**ggplot geometries**](https://davidgohel.github.io/ggiraph/reference/#section-interactive-geometries) that can understand three arguments:
 
@@ -55,11 +52,11 @@ Interactive is made with [**ggplot geometries**](https://davidgohel.github.io/gg
 
 -   **Data_id**: a column of data-sets that contain an id to be associated with elements.
 
-If it used within a shiny application, elements associated with an id (data_id) can be selected and manipulated on client and server sides. Refer to this [article](https://davidgohel.github.io/ggiraph/articles/offcran/shiny.html) for more detail explanation.
+If it us used within a shiny application, elements associated with an id (data_id) can be selected and manipulated on client and server sides. This [article](https://davidgohel.github.io/ggiraph/articles/offcran/shiny.html) provides more detailed explanations.
 
 ## Tooltip effect with *tooltip* aesthetic
 
-Below shows a typical code chunk to plot an interactive statistical graph by using **ggiraph** package. Notice that the code chunk consists of two parts. First, an ggplot object will be created. Next, [`girafe()`](https://davidgohel.github.io/ggiraph/reference/girafe.html) of **ggiraph** will be used to create an interactive svg object.
+Below shows a typical code chunk to plot an interactive statistical graph by using **ggiraph** package. First, a ggplot object will be created. Next, [girafe()](#0) of **ggiraph** will be used to create an interactive svg object, which allows users to hover the mouse pointer on a data point of interest to display the student's ID.
 
 ```{r}
 p <- ggplot(data=exam_data, 
@@ -78,13 +75,9 @@ girafe(
 )
 ```
 
-Notice that two steps are involved. First, an interactive version of ggplot2 geom (i.e. [`geom_dotplot_interactive()`](https://davidgohel.github.io/ggiraph/reference/geom_dotplot_interactive.html)) will be used to create the basic graph. Then, [`girafe()`](https://davidgohel.github.io/ggiraph/reference/girafe.html) will be used to generate an svg object to be displayed on an html page.
-
-By hovering the mouse pointer on an data point of interest, the student's ID will be displayed.
-
 ## Displaying multiple information on tooltip
 
-The content of the tooltip can be customised by including a list object as shown in the code chunk below.
+The content of the tooltip can be customised by including a list object.
 
 ```{r}
 exam_data$tooltip <- c(paste0(     
@@ -107,13 +100,11 @@ girafe(
 )
 ```
 
-The first three lines of codes in the code chunk create a new field called *tooltip*. At the same time, it populates text in ID and CLASS fields into the newly created field. Next, this newly created field is used as tooltip field as shown in the code of line 7.
-
-By hovering the mouse pointer on an data point of interest, the student's ID and Class will be displayed.
+The first three lines of the above code create a new field called *tooltip*. At the same time, it populates text in ID and CLASS fields into the newly created field. Next, this newly created field is used as tooltip field as shown in line 7. By hovering the mouse pointer on an data point of interest, the student's ID and Class will be displayed.
 
 ## Customising Tooltip style
 
-Code chunk below uses [`opts_tooltip()`](https://davidgohel.github.io/ggiraph/reference/opts_tooltip.html) of **ggiraph** to customize tooltip rendering by add css declarations.
+The code below uses [opts_tooltip()](https://davidgohel.github.io/ggiraph/reference/opts_tooltip.html) of **ggiraph** to customize tooltip rendering by adding css declarations.
 
 ```{r}
 tooltip_css <- "background-color:white; #<<
@@ -138,13 +129,11 @@ girafe(
 )                                        
 ```
 
-Notice that the background colour of the tooltip is black and the font colour is white and bold.
-
--   Refer to [Customizing girafe objects](https://davidgohel.github.io/ggiraph/articles/offcran/customizing.html) to learn more about how to customise ggiraph objects.
+The background colour of the tooltip is black and the font colour is white and bold. This [link](https://davidgohel.github.io/ggiraph/articles/offcran/customizing.html) provides more about how to customise ggiraph objects.
 
 ## Displaying statistics on tooltip
 
-Code chunk below shows an advanced way to customise tooltip. In this example, a function is used to compute 90% confident interval of the mean. The derived statistics are then displayed in the tooltip.
+A way to customise tooltip can be seen below. In this example, a function is used to compute 90% confident interval of the mean. The derived statistics are then displayed in the tooltip.
 
 ```{r}
 tooltip <- function(y, ymax, accuracy = .01) {
@@ -175,7 +164,7 @@ girafe(ggobj = gg_point,
 
 ## Hover effect with *data_id* aesthetic
 
-Code chunk below shows the second interactive feature of ggiraph, namely `data_id`.
+Code chunk below shows the second interactive feature of ggiraph, namely data_id. Elements associated with a *data_id,* such as CLASS will be highlighted upon mouse over.
 
 ```{r}
 p <- ggplot(data=exam_data, 
@@ -194,13 +183,15 @@ girafe(
 )                                        
 ```
 
-Interactivity: Elements associated with a *data_id* (i.e CLASS) will be highlighted upon mouse over.
+::: callout-note
+## Note
 
-Note that the default value of the hover css is *hover_css = "fill:orange;"*.
+The default value of the hover css is *hover_css = "fill:orange;"*.
+:::
 
 ## Styling hover effect
 
-In the code chunk below, css codes are used to change the highlighting effect.
+In the code below, css codes are used to change the highlighting effect. Elements associated with a *data_id,* such as CLASS will be highlighted upon mouse over.
 
 ```{r}
 p <- ggplot(data=exam_data, 
@@ -223,13 +214,13 @@ girafe(
 )                                        
 ```
 
-Interactivity: Elements associated with a *data_id* (i.e CLASS) will be highlighted upon mouse over.
+::: callout-note
+## Note
 
-Note: Different from previous example, in this example the ccs customisation request are encoded directly.
+Different from the previous example, this one encodes the ccs customisation request directly.
+:::
 
 ## Combining tooltip and hover effect
-
-There are time that we want to combine tooltip and hover effect on the interactive statistical graph as shown in the code chunk below.
 
 ```{r}
 p <- ggplot(data=exam_data, 
@@ -253,13 +244,11 @@ girafe(
 )                                        
 ```
 
-Interactivity: Elements associated with a *data_id* (i.e CLASS) will be highlighted upon mouse over. At the same time, the tooltip will show the CLASS.
+The tooltip will show the CLASS upon hovering the mouse over it, including highlights of elements associated with a *data_id,* such as CLASS.
 
 ## Click effect with onclick
 
-`onclick` argument of ggiraph provides hotlink interactivity on the web.
-
-The code chunk below shown an example of `onclick`.
+onclick argument of ggiraph provides hotlink interactivity on the web. Web document link with a data object will be displayed on the web browser upon mouse click.
 
 ```{r}
 exam_data$onclick <- sprintf("window.open(\"%s%s\")",
@@ -281,15 +270,13 @@ girafe(
   height_svg = 6*0.618)                                        
 ```
 
-Interactivity: Web document link with a data object will be displayed on the web browser upon mouse click.
-
-**Warning:**
+::: callout-warning
+## Warning
 
 Note that click actions must be a string column in the dataset containing valid javascript instructions.
+:::
 
 ## Coordinated Multiple Views with ggiraph
-
-Coordinated multiple views methods has been implemented in the data visualisation below.
 
 ```{r}
 p1 <- ggplot(data=exam_data, 
@@ -324,29 +311,31 @@ girafe(code = print(p1 + p2),
        ) 
 ```
 
-Notice that when a data point of one of the dotplot is selected, the corresponding data point ID on the second data visualisation will be highlighted too.
+Notable points:
 
-In order to build a coordinated multiple views as shown in the example above, the following programming strategy will be used:
+-   when a data point of one of the dotplot is selected, the corresponding data point ID on the second data visualisation will be highlighted too.
 
-1.  Appropriate interactive functions of **ggiraph** will be used to create the multiple views.
+-   to build coordinated multiple views, the following will be used:
 
-2.  *patchwork* function of [patchwork](https://patchwork.data-imaginist.com/) package will be used inside girafe function to create the interactive coordinated multiple views.
+    -   appropriate interactive functions of **ggiraph** will be used to create the multiple views.
 
-The *data_id* aesthetic is critical to link observations between plots and the tooltip aesthetic is optional but nice to have when mouse over a point.
+    -   **patchwork** function of the [patchwork](https://patchwork.data-imaginist.com/) package will be used inside the girafe function to create the interactive coordinated multiple views.
 
-# Interactive Data Visualisation - plotly methods!
+-   The *data_id* aesthetic is critical to link observations between plots and the tooltip aesthetic is optional but nice to have when hovering over data points with the mouse.
 
-Plotly's R graphing library create interactive web graphics from **ggplot2** graphs and/or a custom interface to the (MIT-licensed) JavaScript library [**plotly.js**](https://plotly.com/javascript/) inspired by the grammar of graphics. Different from other plotly platform, plot.R is free and open source.
+# plotly methods
 
-There are two ways to create interactive graph by using plotly, they are:
+Plotly's R graphing library creates interactive web graphics from **ggplot2** graphs and/or a custom interface to the JavaScript library [plotly.js](https://plotly.com/javascript/) inspired by the grammar of graphics. Different from other plotly platform, plot.R is free and open source.
 
--   by using *plot_ly()*, and
+The two ways to create interactive graphs by using plotly are:
 
--   by using *ggplotly()*
+-   *plot_ly()*, and
+
+-   *ggplotly()*
 
 ## Creating an interactive scatter plot: plot_ly() method
 
-The tabset below shows an example a basic interactive plot created by using *plot_ly()*.
+The tabset below shows an example of a basic interactive plot created by using *plot_ly()*.
 
 ::: panel-tabset
 ## The plot
@@ -370,7 +359,7 @@ plot_ly(data = exam_data,
 
 ## Working with visual variable: plot_ly() method
 
-In the code chunk below, *color* argument is mapped to a qualitative visual variable (i.e. RACE).
+The *color* argument is mapped to a qualitative visual variable (i.e. RACE).
 
 ::: panel-tabset
 ## The plot
@@ -400,8 +389,6 @@ plot_ly(data = exam_data,
 
 ## Creating an interactive scatter plot: ggplotly() method
 
-The code chunk below plots an interactive scatter plot by using *ggplotly()*.
-
 ::: panel-tabset
 ## The plot
 
@@ -429,14 +416,14 @@ p <- ggplot(data=exam_data,
 ggplotly(p)
 ```
 
-Notice that the only extra line you need to include in the code chunk is *ggplotly()*.
+The only extra line that needs to be ncluded in the code chunk is *ggplotly()*.
 :::
 
 ## Coordinated Multiple Views with plotly
 
 The creation of a coordinated linked plot by using plotly involves three steps:
 
--   [`highlight_key()`](https://www.rdocumentation.org/packages/plotly/versions/4.9.2/topics/highlight_key) of **plotly** package is used as shared data.
+-   [*highlight_key()*](https://www.rdocumentation.org/packages/plotly/versions/4.9.2/topics/highlight_key) of **plotly** package is used as shared data.
 
 -   two scatterplots will be created by using ggplot2 functions.
 
@@ -489,16 +476,16 @@ subplot(ggplotly(p1),
         ggplotly(p2))
 ```
 
-Thing to learn from the code chunk:
+Highlights:
 
--   `highlight_key()` simply creates an object of class [crosstalk::SharedData](https://rdrr.io/cran/crosstalk/man/SharedData.html).
+-   highlight_key() simply creates an object of class [crosstalk](https://rdrr.io/cran/crosstalk/man/SharedData.html).
 
--   Visit this [link](https://rstudio.github.io/crosstalk/) to learn more about crosstalk,
+-   This [link](https://rstudio.github.io/crosstalk/) teaches more about crosstalk.
 :::
 
-# Interactive Data Visualisation - crosstalk methods!
+# crosstalk methods
 
-[Crosstalk](https://rstudio.github.io/crosstalk/) is an add-on to the htmlwidgets package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
+[Crosstalk](https://rstudio.github.io/crosstalk/) is an add-on to the htmlwidgets package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
 
 ## Interactive Data Table: DT package
 
@@ -535,7 +522,7 @@ crosstalk::bscols(gg,
 
 ## The code chunk
 
-Code chunk below is used to implement the coordinated brushing shown above.
+The code below is used to implement the coordinated brushing shown above.
 
 ```{r}
 d <- highlight_key(exam_data) 
