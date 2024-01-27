@@ -1,5 +1,5 @@
 ---
-title: "Take Home Exercise 2: "
+title: "Take Home Exercise 2: Peer Critique and Visualization Remake"
 author: "Rachel Yee"
 date: "24 January 2024"
 date-modified: "last-modified"
@@ -9,3 +9,655 @@ execute:
   warning: false
 editor: visual
 ---
+
+# Overview
+
+For this exercise, I have selected a peer's submission for Take-home Exericse 1 and will be conducting an analysis of the charts, assessing their clarity and aesthetics, then redesigning the original visuals, applying principles and best practices in data visualization that were covered in the preceding two classes.
+
+# Data Preparation
+
+For this part, I will be following the same steps taken by the original author as I will only be remaking the submission in terms of clarity and aesthetics.
+
+## Installing R packages
+
+```{r}
+pacman::p_load(tidyverse,haven,ggplot2,patchwork,ggrepel,ggthemes,hrbrthemes)
+```
+
+## Data Sets
+
+::: panel-tabset
+## 1
+
+```{r}
+stu_qqq <- read_sas("data/cy08msp_stu_qqq.sas7bdat")
+```
+
+## 2
+
+```{r}
+stu_qqq_SG <- stu_qqq %>%
+  filter(CNT == "SGP")
+```
+
+## 3
+
+```{r}
+stu_qqq_SG <- read_rds("data/stu_qqq_SG.rds")
+```
+
+## 4
+
+```{r}
+library(dplyr)
+stu_qqq_SG_filtered <- stu_qqq_SG %>%
+  select_if(function(x) !all(x == x[1]))
+```
+
+## 5
+
+```{r}
+write_rds(stu_qqq_SG_filtered,
+          "data/stu_qqq_SG_filtered.rds")
+```
+
+## 6
+
+```{r}
+stu_qqq_SG_filtered <- read_rds("data/stu_qqq_SG_filtered.rds")
+```
+:::
+
+## Data Wrangling
+
+::: panel-tabset
+## 1
+
+```{r}
+stu_qqq_SG_filtered <- stu_qqq_SG_filtered %>%
+  mutate(
+    MATH_Score = rowMeans(select(., PV1MATH:PV10MATH), na.rm = TRUE),
+    READ_Score = rowMeans(select(., PV1READ:PV10READ), na.rm = TRUE),
+    SCIE_Score = rowMeans(select(., PV1SCIE:PV10SCIE), na.rm = TRUE)
+  )
+```
+
+## 2
+
+```{r}
+stu_qqq_SG_filtered <- stu_qqq_SG_filtered %>%
+  mutate(Gender = ifelse(ST004D01T == 1, "Female", "Male"))
+```
+
+## 3
+
+```{r}
+stu_qqq_SG_filtered <- stu_qqq_SG_filtered %>%
+  mutate(CNTSCHID = as.character(CNTSCHID))
+```
+:::
+
+# Data Visualization Critique
+
+## Scores of the Students from Each Subject Area
+
+### Original Design
+
+::: panel-tabset
+## Math
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes (x = 1, y = MATH_Score))+
+  geom_boxplot(notch=TRUE)+
+  stat_summary(geom = "point", fun.y= "mean", colour ="maroon", size=2)+
+  ggtitle("Math Scores")+
+  theme_hc()+
+  coord_cartesian(ylim = c(100, 900))+
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+
+## Reading
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes (x = 1, y = READ_Score))+
+  geom_boxplot(notch=TRUE)+
+  stat_summary(geom = "point", fun.y= "mean", colour ="maroon", size=2)+
+  ggtitle("Reading Scores")+
+  theme_hc()+
+  coord_cartesian(ylim = c(100, 900))+
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+
+## Science
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes (x = 1, y = SCIE_Score))+
+  geom_boxplot(notch=TRUE)+
+  stat_summary(geom = "point", fun.y= "mean", colour ="maroon", size=2)+
+  ggtitle("Science Scores")+
+  theme_hc()+
+  coord_cartesian(ylim = c(100, 900))+
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+:::
+
+### Critique
+
+#### Clarity
+
+-   More appropriate labels would give readers a better understanding, such as a title of "Distribution of Math Scores", and a y-axis label for "Score".
+
+-   The notch that narrows the box around the median also seems to be unnecessary as it is too difficult to determine the exact value of it just by looking at it.
+
+-   While a boxplot provides a concise visual summary of the distribution including outliers, I believe that a histogram is preferred since its able to present an overall trend more intuitively with a detailed view of the entire spread of the data, while providing statistical information for readers to easily grasp.
+
+-   A disadvantage of a boxplot is that it doesn't show individual data points, thus each observation is assumed to be equal and symmetrical in the distribution.
+
+#### Aesthetics
+
+-   Colors could be added to make it more visually pleasing.
+
+-   Overall graph is generally simple and clear, with a mean point and outliers included.
+
+### Sketch for Alternative Design
+
+![](images/1.png){fig-align="center"}
+
+### Makeover
+
+::: panel-tabset
+## Math
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x = MATH_Score)) +
+  geom_histogram(binwidth = 30, fill = "skyblue", color = "steelblue", alpha = 0.7) +
+  ggtitle("Distribution of Math Scores") +
+  xlab("Scores") +
+  ylab("Number of Students") +
+  geom_vline(aes(xintercept=median(stu_qqq_SG_filtered$MATH_Score, na.rm = T)), 
+             color="red", 
+             linewidth=1, 
+             linetype="dashed") + 
+  annotate("text", 
+           x=660, 
+           y=60, 
+          label= paste("Median =", round(median(stu_qqq_SG_filtered$MATH_Score, na.rm = T), 3)), 
+           color= "red", 
+           size=4,
+           ) +
+  geom_vline(aes(xintercept=mean(stu_qqq_SG_filtered$MATH_Score, na.rm = T)),
+             colour="blue",
+             linewidth=1,
+             linetype="dashed") +
+  annotate("text",
+           x=495,
+           y=50,
+           label=paste("Mean =", round(mean(stu_qqq_SG_filtered$MATH_Score, na.rm = T), 3)),
+           color="blue",
+           size=4) +
+  theme_minimal()
+```
+
+## Reading
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x = READ_Score)) +
+  geom_histogram(binwidth = 30, fill = "skyblue", color = "steelblue", alpha = 0.7) +
+  ggtitle("Distribution of Reading Scores") +
+  xlab("Scores") +
+  ylab("Number of Students") +
+  geom_vline(aes(xintercept=median(stu_qqq_SG_filtered$READ_Score, na.rm = T)), 
+             color="red", 
+             linewidth=1, 
+             linetype="dashed") + 
+  annotate("text", 
+           x=650, 
+           y=60, 
+          label= paste("Median =", round(median(stu_qqq_SG_filtered$READ_Score, na.rm = T), 3)), 
+           color= "red", 
+           size=4,
+           ) +
+  geom_vline(aes(xintercept=mean(stu_qqq_SG_filtered$READ_Score, na.rm = T)),
+             colour="blue",
+             linewidth=1,
+             linetype="dashed") +
+  annotate("text",
+           x=460,
+           y=50,
+           label=paste("Mean =", round(mean(stu_qqq_SG_filtered$READ_Score, na.rm = T), 3)),
+           color="blue",
+           size=4) +
+  theme_minimal()
+```
+
+## Science
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x = SCIE_Score)) +
+  geom_histogram(binwidth = 30, fill = "skyblue", color = "steelblue", alpha = 0.7) +
+  ggtitle("Distribution of Science Scores") +
+  xlab("Scores") +
+  ylab("Number of Students") +
+  geom_vline(aes(xintercept=median(stu_qqq_SG_filtered$SCIE_Score, na.rm = T)), 
+             color="red", 
+             linewidth=1, 
+             linetype="dashed") + 
+  annotate("text", 
+           x=650, 
+           y=60, 
+          label= paste("Median =", round(median(stu_qqq_SG_filtered$SCIE_Score, na.rm = T), 3)), 
+           color= "red", 
+           size=4,
+           ) +
+  geom_vline(aes(xintercept=mean(stu_qqq_SG_filtered$SCIE_Score, na.rm = T)),
+             colour="blue",
+             linewidth=1,
+             linetype="dashed") +
+  annotate("text",
+           x=495,
+           y=50,
+           label=paste("Mean =", round(mean(stu_qqq_SG_filtered$SCIE_Score, na.rm = T), 3)),
+           color="blue",
+           size=4) +
+  theme_minimal()
+```
+:::
+
+## Difference in Scores per Subject Based on the Student\'s Gender
+
+### Original Design
+
+::: panel-tabset
+## Math
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes (x = Gender, y = MATH_Score))+
+  geom_boxplot(notch=TRUE)+
+  stat_summary(geom = "point", fun.y= "mean", colour ="maroon", size=2)+
+  ggtitle("Math Scores by Gender")+
+  theme_hc()+
+  coord_cartesian(ylim = c(100, 900))+
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+
+## Reading
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes (x = Gender, y = READ_Score))+
+  geom_boxplot(notch=TRUE)+
+  stat_summary(geom = "point", fun.y= "mean", colour ="maroon", size=2)+
+  ggtitle("Reading Scores by Gender")+
+  theme_hc()+
+  coord_cartesian(ylim = c(100, 900))+
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+
+## Science
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes (x = Gender, y = SCIE_Score))+
+  geom_boxplot(notch=TRUE)+
+  stat_summary(geom = "point", fun.y= "mean", colour ="maroon", size=2)+
+  ggtitle("Science Scores by Gender")+
+  theme_hc()+
+  coord_cartesian(ylim = c(100, 900))+
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+:::
+
+### Critique
+
+#### Clarity
+
+-   The graph does not allow side by side comparison. To do so, patchwork can be implemented for readers to easily visualize and read.
+
+```{=html}
+<!-- -->
+```
+-   The overall look of the boxplot is neat, with labels. However, after the patchwork, the title labels only needs the subject, with "Scores" as a y-axis label.
+
+-   The use of the notch can be confusing for readers who are not familar to the idea of it representing the median. It might be overwhelming, thus it would be better to disregard this in the boxplots.
+
+#### Aesthetics
+
+-   Other than the mean point, there are no colors are present. Since the previous histogram was filled with a light blue color, I will do the same here to make it more appealing.
+
+-   The maroon color does not seem to match the color scheme of the website, so this will be replaced with dark blue.
+
+-   The size of the outliers are too big, resulting in a clustered appearance, so this will be adjusted.
+
+### Sketch for Alternative Design
+
+![](images/2.png){fig-align="center"}
+
+### Makeover
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+math <- ggplot(data = stu_qqq_SG_filtered,
+       aes(x = Gender, y = MATH_Score)) +
+  geom_boxplot(fill = "lightblue", color = "black", outlier.size = 1) +
+  stat_summary(geom = "point", fun.y = "mean", color = "darkblue", size = 2) +
+  ggtitle("Mathematics") +
+  ylab("Scores") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100)) +
+  labs(x = "", y = "Score", title = "Mathematics", axis.title.y = element_blank())
+
+read <- ggplot(data = stu_qqq_SG_filtered,
+       aes(x = Gender, y = READ_Score)) +
+  geom_boxplot(fill = "lightblue", color = "black", outlier.size = 1) +
+  stat_summary(geom = "point", fun.y = "mean", color = "darkblue", size = 2) +
+  ggtitle("Reading") +
+  xlab("Gender") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100)) +
+  theme(axis.text.y = element_blank(), axis.title.y = element_blank())
+
+sci <- ggplot(data = stu_qqq_SG_filtered,
+       aes(x = Gender, y = SCIE_Score)) +
+  geom_boxplot(fill = "lightblue", color = "black", outlier.size = 1) +
+  stat_summary(geom = "point", fun.y = "mean", color = "darkblue", size = 2) +
+  ggtitle("Science") +
+  ylab("Scores") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100)) +
+  theme(axis.title.x = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank())
+
+math + read + sci
+```
+
+## Range of the Average Score per Subject per School
+
+### Original Design
+
+::: panel-tabset
+## Obtaining Average Scores per School per Subject
+
+```{r}
+Get_School <- stu_qqq_SG_filtered
+
+By_School <- Get_School %>%
+  group_by(CNTSCHID) %>%
+  summarize(
+    Avg_Math = mean(MATH_Score, na.rm = TRUE),
+    Avg_Read = mean(READ_Score, na.rm = TRUE),
+    Avg_Scie = mean(SCIE_Score, na.rm = TRUE)
+  )
+```
+
+## Math
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = By_School,
+       aes(x = factor(1), y = Avg_Math)) +
+  geom_boxplot(notch = TRUE) +
+  stat_summary(geom = "point", fun.y = "mean", colour = "maroon", size = 2) +
+  ggtitle("Math Scores by School") +
+  theme_hc() +
+  coord_cartesian(ylim = c(300, 750)) +
+  scale_y_continuous(breaks = seq(300, 750, by = 50)) +
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+
+## Reading
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = By_School,
+       aes(x = factor(1), y = Avg_Read)) +
+  geom_boxplot(notch = TRUE) +
+  stat_summary(geom = "point", fun.y = "mean", colour = "maroon", size = 2) +
+  ggtitle("Reading Scores by School") +
+  theme_hc() +
+  coord_cartesian(ylim = c(300, 750)) +
+  scale_y_continuous(breaks = seq(300, 750, by = 50)) +
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+
+## Science
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = By_School,
+       aes(x = factor(1), y = Avg_Scie)) +
+  geom_boxplot(notch = TRUE) +
+  stat_summary(geom = "point", fun.y = "mean", colour = "maroon", size = 2) +
+  ggtitle("Science Scores by School") +
+  theme_hc() +
+  coord_cartesian(ylim = c(300, 750)) +
+  scale_y_continuous(breaks = seq(300, 750, by = 50)) +
+  theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank())
+```
+:::
+
+### Critique
+
+#### Clarity
+
+-   The critiques on clarity are more or less the same to the ones done for gender, since both have the same boxplot visual representations. Thus, to change things up a little, I will be modifying them into violin plots.
+
+#### Aesthetics
+
+-   Similar to the critique above, I will make the same amendments with the previous makeover, except that this one would be for a violin plot.
+
+### Sketch for Alternative Design
+
+![](images/3.png){fig-align="center"}
+
+### Makeover
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+math1 <- ggplot(data = By_School,
+                aes(x = factor(1), y = Avg_Math)) +
+  geom_violin(fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_point(stat = "summary", fun.y = "mean", color = "darkblue", size = 2) +
+  ggtitle("Math") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(300, 750)) +
+  scale_y_continuous(breaks = seq(300, 750, by = 50)) +
+  labs(x = "", y = "Score") +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+
+read1 <- ggplot(data = By_School,
+       aes(x = factor(1), y = Avg_Read)) +
+  geom_violin(fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_point(stat = "summary", fun.y = "mean", color = "darkblue", size = 2) +
+  ggtitle("Reading") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(300, 750)) +
+  scale_y_continuous(breaks = seq(300, 750, by = 50)) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank())
+
+sci1 <- ggplot(data = By_School,
+       aes(x = factor(1), y = Avg_Scie)) +
+  geom_violin(fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_point(stat = "summary", fun.y = "mean", color = "darkblue", size = 2) +
+  ggtitle("Science") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(300, 750)) +
+  scale_y_continuous(breaks = seq(300, 750, by = 50)) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank())
+
+math1 + read1 + sci1
+```
+
+## Difference in Scores per Subject Based on Socioeconomic Status
+
+### Original Design
+
+::: panel-tabset
+## Math
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x=ESCS,y=MATH_Score))+
+  geom_point()+
+  geom_smooth(method=lm,
+              size=0.5)+
+  ggtitle("Math Score by ESCS") +
+  theme_hc() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.title.y = element_blank())
+```
+
+## Reading
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x=ESCS,y=READ_Score))+
+  geom_point()+
+  geom_smooth(method=lm,
+              size=0.5)+
+  ggtitle("Reading Score by ESCS") +
+  theme_hc() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.title.y = element_blank())
+```
+
+## Science
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x=ESCS,y=SCIE_Score))+
+  geom_point()+
+  geom_smooth(method=lm,
+              size=0.5)+
+  ggtitle("Science Score by ESCS") +
+  theme_hc() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100))+
+  theme(axis.title.y = element_blank())
+```
+:::
+
+### Critique
+
+#### Clarity
+
+-   The title and axis labels are clear and informative.
+
+-   The correlation value is absent, so even readers who might know what the line represents would still not be able to get this exact value just by looking at it.
+
+-   Readers might be confused to what *ESCS* is representing, thus it will be better if it is replaced with "Socioeconomic Status" for clearer understanding.
+
+#### Aesthetics
+
+-   The size of the points will be made smaller so the scatter plot will not seem too clustered.
+
+-   The color of the scatter plots and the lm line will be switched for a better visualization, and is adjusted to match the previous scheme.
+
+### Sketch for Alternative Design
+
+![](images/4.png){fig-align="center"}
+
+### Makeover
+
+::: panel-tabset
+## Math
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x = ESCS, y = MATH_Score)) +
+  geom_point(size = 1, color = "darkblue") +
+  geom_smooth(method = lm, size = 1, color = "black") +
+  ggtitle("Math Score by Socioeconomic Status") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100)) +
+  theme(axis.title.y = element_blank()) +
+  annotate("text", x = -2, y = 800, label = paste0("r = ", round(cor(stu_qqq_SG_filtered$MATH_Score, stu_qqq_SG_filtered$ESCS, use = "complete.obs"),2)), color = 'black')
+```
+
+## Reading
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x = ESCS, y = READ_Score)) +
+  geom_point(size = 1, color = "darkblue") +
+  geom_smooth(method = lm, size = 1, color = "black") +
+  ggtitle("Reading Score by Socioeconomic Status") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100)) +
+  theme(axis.title.y = element_blank()) +
+  annotate("text", x = -2, y = 800, label = paste0("r = ", round(cor(stu_qqq_SG_filtered$READ_Score, stu_qqq_SG_filtered$ESCS, use = "complete.obs"),2)), color = 'black')
+```
+
+## Science
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ggplot(data = stu_qqq_SG_filtered,
+       aes(x = ESCS, y = SCIE_Score)) +
+  geom_point(size = 1, color = "darkblue") +
+  geom_smooth(method = lm, size = 1, color = "black") +
+  ggtitle("Science Score by ESCS") +
+  theme_minimal() +
+  coord_cartesian(ylim = c(100, 900)) +
+  scale_y_continuous(breaks = seq(100, 900, by = 100)) +
+  theme(axis.title.y = element_blank()) +
+  annotate("text", x = -2, y = 800, label = paste0("r = ", round(cor(stu_qqq_SG_filtered$SCIE_Score, stu_qqq_SG_filtered$ESCS, use = "complete.obs"),2)), color = 'black')
+```
+:::
+
+# Takeaways
+
+Doing this exercise provided a different view on how I am able to visualize data and provide insights in different ways. It allowed me to do a comparison and compare and contrast which methods were most compatible for the different analysis. There is actually no right way to make charts, what matters most is the clarity of the deliverable, while maintaining attractive visuals. Not only that, but I was also able to explore more into the options and use of ggplot2, ggplot2 extensions and tidyverse packages.
