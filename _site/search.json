@@ -705,5 +705,124 @@
     "title": "Hands-on Exercise 4A: Visualising Distribution",
     "section": "Finishing touch",
     "text": "Finishing touch\nLastly, coord_flip() of ggplot2 package will be used to flip the raincloud chart horizontally to give it the raincloud appearance. At the same time, theme_economist() of ggthemes package is used to give the raincloud chart a professional publishing standard look.\n\nThe plotThe code chunk\n\n\n\n\n\n\n\n\n\n\nggplot(exam, \n       aes(x = RACE, \n           y = ENGLISH)) +\n  stat_halfeye(adjust = 0.5,\n               justification = -0.2,\n               .width = 0,\n               point_colour = NA) +\n  geom_boxplot(width = .20,\n               outlier.shape = NA) +\n  stat_dots(side = \"left\", \n            justification = 1.2, \n            binwidth = .5,\n            dotsize = 1.5) +\n  coord_flip() +\n  theme_economist()"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "",
+    "text": "Visualising uncertainty is relatively new in statistical graphics. In this chapter, you will gain hands-on experience on creating statistical graphics for visualising uncertainty. By the end of this chapter you will be able:\n\nto plot statistics error bars by using ggplot2,\nto plot interactive error bars by combining ggplot2, plotly and DT,\nto create advanced by using ggdist, and\nto create hypothetical outcome plots (HOPs) by using ungeviz package."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#installing-and-importing-r-packages",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#installing-and-importing-r-packages",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Installing and importing R packages",
+    "text": "Installing and importing R packages\nFor the purpose of this exercise, the following R packages will be used, they are:\n\ntidyverse, a family of R packages for data science process,\nplotly for creating interactive plot,\ngganimate for creating animation plot,\nDT for displaying interactive html table,\ncrosstalk for for implementing cross-widget interactions (currently, linked brushing and filtering), and\nggdist for visualising distribution and uncertainty.\n\n\ndevtools::install_github(\"wilkelab/ungeviz\")\n\n\npacman::p_load(ungeviz, plotly, crosstalk,\n               DT, ggdist, ggridges,\n               colorspace, gganimate, tidyverse)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#importing-the-data",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#importing-the-data",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Importing the Data",
+    "text": "Importing the Data\n\nexam &lt;- read_csv(\"data/Exam_data.csv\")"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#plotting-standard-error-bars-of-point-estimates",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#plotting-standard-error-bars-of-point-estimates",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Plotting standard error bars of point estimates",
+    "text": "Plotting standard error bars of point estimates\nNow we are ready to plot the standard error bars of mean maths score by race as shown below.\n\nThe plotThe code\n\n\n\n\n\n\n\n\n\n\nggplot(my_sum) +\n  geom_errorbar(\n    aes(x=RACE, \n        ymin=mean-se, \n        ymax=mean+se), \n    width=0.2, \n    colour=\"black\", \n    alpha=0.9, \n    size=0.5) +\n  geom_point(aes\n           (x=RACE, \n            y=mean), \n           stat=\"identity\", \n           color=\"red\",\n           size = 1.5,\n           alpha=1) +\n  ggtitle(\"Standard error of mean maths score by rac\")\n\n\n\n\n\n\n\nThings to learn from the code chunk above\n\n\n\n\nThe error bars are computed by using the formula mean+/-se.\nFor geom_point(), it is important to indicate stat=“identity”."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#plotting-confidence-interval-of-point-estimates",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#plotting-confidence-interval-of-point-estimates",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Plotting confidence interval of point estimates",
+    "text": "Plotting confidence interval of point estimates\nInstead of plotting the standard error bar of point estimates, we can also plot the confidence intervals of mean maths score by race.\n\nThe plotThe code\n\n\n\n\n\n\n\n\n\n\nggplot(my_sum) +\n  geom_errorbar(\n    aes(x=reorder(RACE, -mean), \n        ymin=mean-1.96*se, \n        ymax=mean+1.96*se), \n    width=0.2, \n    colour=\"black\", \n    alpha=0.9, \n    size=0.5) +\n  geom_point(aes\n           (x=RACE, \n            y=mean), \n           stat=\"identity\", \n           color=\"red\",\n           size = 1.5,\n           alpha=1) +\n  labs(x = \"Maths score\",\n       title = \"95% confidence interval of mean maths score by race\")"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-with-interactive-error-bars",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-with-interactive-error-bars",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Visualizing the uncertainty of point estimates with interactive error bars",
+    "text": "Visualizing the uncertainty of point estimates with interactive error bars\nIn this section, you will learn how to plot interactive error bars for the 99% confidence interval of mean maths score by race as shown in the figure below.\n\nThe plotThe code\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nshared_df = SharedData$new(my_sum)\n\nbscols(widths = c(4,8),\n       ggplotly((ggplot(shared_df) +\n                   geom_errorbar(aes(\n                     x=reorder(RACE, -mean),\n                     ymin=mean-2.58*se, \n                     ymax=mean+2.58*se), \n                     width=0.2, \n                     colour=\"black\", \n                     alpha=0.9, \n                     size=0.5) +\n                   geom_point(aes(\n                     x=RACE, \n                     y=mean, \n                     text = paste(\"Race:\", `RACE`, \n                                  \"&lt;br&gt;N:\", `n`,\n                                  \"&lt;br&gt;Avg. Scores:\", round(mean, digits = 2),\n                                  \"&lt;br&gt;95% CI:[\", \n                                  round((mean-2.58*se), digits = 2), \",\",\n                                  round((mean+2.58*se), digits = 2),\"]\")),\n                     stat=\"identity\", \n                     color=\"red\", \n                     size = 1.5, \n                     alpha=1) + \n                   xlab(\"Race\") + \n                   ylab(\"Average Scores\") + \n                   theme_minimal() + \n                   theme(axis.text.x = element_text(\n                     angle = 45, vjust = 0.5, hjust=1)) +\n                   ggtitle(\"99% Confidence interval of average /&lt;br&gt;maths scores by race\")), \n                tooltip = \"text\"), \n       DT::datatable(shared_df, \n                     rownames = FALSE, \n                     class=\"compact\", \n                     width=\"100%\", \n                     options = list(pageLength = 10,\n                                    scrollX=T), \n                     colnames = c(\"No. of pupils\", \n                                  \"Avg Scores\",\n                                  \"Std Dev\",\n                                  \"Std Error\")) %&gt;%\n         formatRound(columns=c('mean', 'sd', 'se'),\n                     digits=2))"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-ggdist-methods",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-ggdist-methods",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Visualizing the uncertainty of point estimates: ggdist methods",
+    "text": "Visualizing the uncertainty of point estimates: ggdist methods\nIn the code chunk below, stat_pointinterval() of ggdist is used to build a visual for displaying distribution of maths scores by race.\n\nexam %&gt;%\n  ggplot(aes(x = RACE, \n             y = MATHS)) +\n  stat_pointinterval() +\n  labs(\n    title = \"Visualising confidence intervals of mean math score\",\n    subtitle = \"Mean Point + Multiple-interval plot\")\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThis function comes with many arguments, students are advised to read the syntax reference for more detail.\n\n\nFor example, in the code chunk below the following arguments are used:\n\n.width = 0.95\n.point = median\n.interval = qi\n\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_pointinterval(.width = 0.95,\n  .point = median,\n  .interval = qi) +\n  labs(\n    title = \"Visualising confidence intervals of median math score\",\n    subtitle = \"Median Point + Multiple-interval plot\")"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-ggdist-methods-1",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-ggdist-methods-1",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Visualizing the uncertainty of point estimates: ggdist methods",
+    "text": "Visualizing the uncertainty of point estimates: ggdist methods\n\n95% CI99% CI\n\n\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_pointinterval(\n    .width = 0.95,\n    .point = \"mean\",\n    .interval = \"confidence\",\n    show.legend = FALSE) +\n  labs(\n    title = \"Visualising confidence intervals of mean math score\",\n    subtitle = \"Mean Point + Multiple-interval plot\"\n  )\n\n\n\n\n\n\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_pointinterval(\n    .width = 0.99,\n    .point = \"mean\",\n    .interval = \"confidence\",\n    show.legend = FALSE) +\n  labs(\n    title = \"Visualising confidence intervals of mean math score\",\n    subtitle = \"Mean Point + Multiple-interval plot\"\n  )"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-ggdist-methods-2",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04C.html#visualizing-the-uncertainty-of-point-estimates-ggdist-methods-2",
+    "title": "Hands-on Exercise 4C: Visualising Uncertainty",
+    "section": "Visualizing the uncertainty of point estimates: ggdist methods",
+    "text": "Visualizing the uncertainty of point estimates: ggdist methods\nIn the code chunk below, stat_gradientinterval() of ggdist is used to build a visual for displaying distribution of maths scores by race.\n\nexam %&gt;%\n  ggplot(aes(x = RACE, \n             y = MATHS)) +\n  stat_gradientinterval(   \n    fill = \"skyblue\",      \n    show.legend = TRUE     \n  ) +                        \n  labs(\n    title = \"Visualising confidence intervals of mean math score\",\n    subtitle = \"Gradient + interval plot\")"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "",
+    "text": "Funnel plot is a specially designed data visualisation for conducting unbiased comparison between outlets, stores or business entities. By the end of this hands-on exercise, you will gain hands-on experience on:\n\nplotting funnel plots by using funnelPlotR package,\nplotting static funnel plot by using ggplot2 package, and\nplotting interactive funnel plot by using both plotly R and ggplot2 packages."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#funnelplotr-methods-the-basic-plot",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#funnelplotr-methods-the-basic-plot",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "FunnelPlotR methods: The basic plot",
+    "text": "FunnelPlotR methods: The basic plot\nThe code chunk below plots a funnel plot.\n\nfunnel_plot(\n  numerator = covid19$Positive,\n  denominator = covid19$Death,\n  group = covid19$`Sub-district`\n)\n\n\n\n\nA funnel plot object with 267 points of which 0 are outliers. \nPlot is adjusted for overdispersion. \n\n\nA funnel plot object with 267 points of which 0 are outliers.  Plot is adjusted for overdispersion. \nThings to learn from the code chunk above.\n\ngroup in this function is different from the scatterplot. Here, it defines the level of the points to be plotted i.e. Sub-district, District or City. If Cityc is chosen, there are only six data points.\nBy default, data_typeargument is \"SR\".\nlimit: Plot limits, accepted values are: 95 or 99, corresponding to 95% or 99.8% quantiles of the distribution."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#funnelplotr-methods-makeover-1",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#funnelplotr-methods-makeover-1",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "FunnelPlotR methods: Makeover 1",
+    "text": "FunnelPlotR methods: Makeover 1\nThe code chunk below plots a funnel plot.\n\nfunnel_plot(\n  numerator = covid19$Death,\n  denominator = covid19$Positive,\n  group = covid19$`Sub-district`,\n  data_type = \"PR\",     #&lt;&lt;\n  xrange = c(0, 6500),  #&lt;&lt;\n  yrange = c(0, 0.05)   #&lt;&lt;\n)\n\n\n\n\nA funnel plot object with 267 points of which 7 are outliers. \nPlot is adjusted for overdispersion. \n\n\nA funnel plot object with 267 points of which 7 are outliers.  Plot is adjusted for overdispersion. \nThings to learn from the code chunk above. + data_type argument is used to change from default \"SR\" to \"PR\" (i.e. proportions). + xrange and yrange are used to set the range of x-axis and y-axis"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#funnelplotr-methods-makeover-2",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#funnelplotr-methods-makeover-2",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "FunnelPlotR methods: Makeover 2",
+    "text": "FunnelPlotR methods: Makeover 2\nThe code chunk below plots a funnel plot.\n\nfunnel_plot(\n  numerator = covid19$Death,\n  denominator = covid19$Positive,\n  group = covid19$`Sub-district`,\n  data_type = \"PR\",   \n  xrange = c(0, 6500),  \n  yrange = c(0, 0.05),\n  label = NA,\n  title = \"Cumulative COVID-19 Fatality Rate by Cumulative Total Number of COVID-19 Positive Cases\", #&lt;&lt;           \n  x_label = \"Cumulative COVID-19 Positive Cases\", #&lt;&lt;\n  y_label = \"Cumulative Fatality Rate\"  #&lt;&lt;\n)\n\n\n\n\nA funnel plot object with 267 points of which 7 are outliers. \nPlot is adjusted for overdispersion. \n\n\nA funnel plot object with 267 points of which 7 are outliers.  Plot is adjusted for overdispersion. \nThings to learn from the code chunk above.\n\nlabel = NA argument is to removed the default label outliers feature.\ntitle argument is used to add plot title.\nx_label and y_label arguments are used to add/edit x-axis and y-axis titles."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#computing-the-basic-derived-fields",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#computing-the-basic-derived-fields",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "Computing the basic derived fields",
+    "text": "Computing the basic derived fields\nTo plot the funnel plot from scratch, we need to derive cumulative death rate and standard error of cumulative death rate.\n\ndf &lt;- covid19 %&gt;%\n  mutate(rate = Death / Positive) %&gt;%\n  mutate(rate.se = sqrt((rate*(1-rate)) / (Positive))) %&gt;%\n  filter(rate &gt; 0)\n\nNext, the fit.mean is computed by using the code chunk below.\n\nfit.mean &lt;- weighted.mean(df$rate, 1/df$rate.se^2)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#calculate-lower-and-upper-limits-for-95-and-99.9-ci",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#calculate-lower-and-upper-limits-for-95-and-99.9-ci",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "Calculate lower and upper limits for 95% and 99.9% CI",
+    "text": "Calculate lower and upper limits for 95% and 99.9% CI\nThe code chunk below is used to compute the lower and upper limits for 95% confidence interval.\n\nnumber.seq &lt;- seq(1, max(df$Positive), 1)\nnumber.ll95 &lt;- fit.mean - 1.96 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) \nnumber.ul95 &lt;- fit.mean + 1.96 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) \nnumber.ll999 &lt;- fit.mean - 3.29 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) \nnumber.ul999 &lt;- fit.mean + 3.29 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) \ndfCI &lt;- data.frame(number.ll95, number.ul95, number.ll999, \n                   number.ul999, number.seq, fit.mean)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#plotting-a-static-funnel-plot",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#plotting-a-static-funnel-plot",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "Plotting a static funnel plot",
+    "text": "Plotting a static funnel plot\nIn the code chunk below, ggplot2 functions are used to plot a static funnel plot.\n\np &lt;- ggplot(df, aes(x = Positive, y = rate)) +\n  geom_point(aes(label=`Sub-district`), \n             alpha=0.4) +\n  geom_line(data = dfCI, \n            aes(x = number.seq, \n                y = number.ll95), \n            size = 0.4, \n            colour = \"grey40\", \n            linetype = \"dashed\") +\n  geom_line(data = dfCI, \n            aes(x = number.seq, \n                y = number.ul95), \n            size = 0.4, \n            colour = \"grey40\", \n            linetype = \"dashed\") +\n  geom_line(data = dfCI, \n            aes(x = number.seq, \n                y = number.ll999), \n            size = 0.4, \n            colour = \"grey40\") +\n  geom_line(data = dfCI, \n            aes(x = number.seq, \n                y = number.ul999), \n            size = 0.4, \n            colour = \"grey40\") +\n  geom_hline(data = dfCI, \n             aes(yintercept = fit.mean), \n             size = 0.4, \n             colour = \"grey40\") +\n  coord_cartesian(ylim=c(0,0.05)) +\n  annotate(\"text\", x = 1, y = -0.13, label = \"95%\", size = 3, colour = \"grey40\") + \n  annotate(\"text\", x = 4.5, y = -0.18, label = \"99%\", size = 3, colour = \"grey40\") + \n  ggtitle(\"Cumulative Fatality Rate by Cumulative Number of COVID-19 Cases\") +\n  xlab(\"Cumulative Number of COVID-19 Cases\") + \n  ylab(\"Cumulative Fatality Rate\") +\n  theme_light() +\n  theme(plot.title = element_text(size=12),\n        legend.position = c(0.91,0.85), \n        legend.title = element_text(size=7),\n        legend.text = element_text(size=7),\n        legend.background = element_rect(colour = \"grey60\", linetype = \"dotted\"),\n        legend.key.height = unit(0.3, \"cm\"))\np"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#interactive-funnel-plot-plotly-ggplot2",
+    "href": "Hands-On_Ex/Hands-on_Ex04/Hands-on_Ex04D.html#interactive-funnel-plot-plotly-ggplot2",
+    "title": "Hands-on Exercise 4D: Funnel Plots for Fair Comparisons",
+    "section": "Interactive Funnel Plot: plotly + ggplot2",
+    "text": "Interactive Funnel Plot: plotly + ggplot2\nThe funnel plot created using ggplot2 functions can be made interactive with ggplotly() of plotly r package.\n\nfp_ggplotly &lt;- ggplotly(p,\n  tooltip = c(\"label\", \n              \"x\", \n              \"y\"))\nfp_ggplotly"
   }
 ]
