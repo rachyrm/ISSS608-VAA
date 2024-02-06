@@ -55,9 +55,9 @@ website:
     - icon: house
       href: https://isss608-rachyrm.netlify.app/
       aria-label: Home
-    - icon: person-lines-fill
-      href: https://isss608-rachyrm.netlify.app/about
-      aria-label: About
+#    - icon: person-lines-fill
+#      href: https://isss608-rachyrm.netlify.app/about
+#      aria-label: About
     - icon: github
       href: https://github.com/rachyrm/ISSS608-VAA
       aria-label: GitHub
