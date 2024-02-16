@@ -1,0 +1,219 @@
+---
+title: "Take Home Exercise 3: Be Weatherwise or Otherwise"
+author: "Rachel Yee"
+date: "14 February 2024"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Project Brief
+
+In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic.
+
+![](https://isss608-ay2023-24jan.netlify.app/take-home_ex/img/Climate_change.jpg)
+
+The report suggests an anticipated increase in daily mean temperatures ranging from 1.4 to 4.6 degrees. Additionally, the projection highlights an expected intensification of the contrast between wet months (November to January) and dry months (February and June to September). The objective is to leverage newly acquired skills in visual interactivity and uncertainty visualization methods to scrutinize and validate the assertions made in the report.
+
+# Project Objectives
+
+This project aims to employ **interactive techniques** and **functions** to unveil insights from historical daily temperature data sourced from the [Meteorological Service Singapore](http://www.weather.gov.sg/home/) website. Focusing on daily temperatures in Changi for April across the years 1983, 1993, 2003, 2013 and 2023, the goal is to create analytics-driven visualizations. The primary objective of this project is to enhance user experience through interactive features, facilitating dynamic data exploration and visual storytelling.
+
+# Data Preparation
+
+## Loading R packages
+
+```{r}
+pacman::p_load(tidyverse, haven, ggiraph, ggthemes, ggdist, plotly, DT, ggplot2, crosstalk)
+```
+
+## The Data
+
+This project will concentrate on extracting [historical daily temperature or rainfall data](http://www.weather.gov.sg/climate-historical-daily/) from the [Meteorological Service Singapore](http://www.weather.gov.sg/home/) website. Specifically, the focus will be on the month of **April** for the years **1983, 1993, 2003, 2013,** and **2023** in **Changi** area. Despite the wealth of data covering various areas in Singapore and multiple months, the project narrows its scope to derive insights from this targeted timeframe and specific set of years.
+
+## Importing the Data
+
+The code chunk below uses read_sas() of [haven](https://haven.tidyverse.org/reference/index.html) to import PISA data into R environment.
+
+```{r}
+data_2023 <- read_csv("data/2023.csv")
+```
+
+```{r}
+data_2013 <- read_csv("data/2013.csv")
+```
+
+```{r}
+data_2003 <- read_csv("data/2003.csv")
+```
+
+```{r}
+data_1993 <- read_csv("data/1993.csv")
+```
+
+```{r}
+data_1983 <- read_csv("data/1983.csv")
+```
+
+# Data Wrangling
+
+The below code chunk will combine the data of 5 years into one table.
+
+```{r}
+temperature <- rbind(data_2023,data_2013,data_2003,data_1993,data_1983)
+```
+
+This code converts the "Year" column in the "temperature" dataset to a factor. So, the overall effect of this code is to convert the "Year" column in the "temperature" dataset from a numeric or character type into a factor type. This is often done when the "Year" column contains discrete and unordered categories, such as years, and you want to treat them as factors rather than numerical values. It's especially useful for categorical data in statistical modeling and visualization.
+
+```{r}
+temperature$Year = as.factor(temperature$Year)
+temperature$Day = as.factor(temperature$Day)
+```
+
+# Data Visualization
+
+## Calendar Heatmap
+
+```{r}
+ggplotly(ggplot(temperature, 
+       aes(Day, 
+           Year, 
+           fill = `Mean Temperature (°C)`)) +
+geom_tile(color = "black", 
+          size = 0.1) + 
+theme_tufte(base_family = "Helvetica") + 
+scale_fill_gradient(name = "°C",
+                    low = "light yellow", 
+                    high = "dark green") +
+labs(x = NULL, 
+     y = NULL, 
+     title = "Temperatures in Month of April") +
+theme(axis.ticks = element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 6)))
+```
+
+This graph visually represents temperature variations in the month of April across different years. Each square on the plot corresponds to a specific day and year, with the color inside representing the mean temperature in degrees (°C). The color scale ranges from light yellow to dark green, indicating lower to higher temperatures. The graph follows a tile plot style, showcasing patterns and trends in temperature changes over time. The y-axis is specifically scaled for the years 1983, 1993, 2003, 2013, and 2023. The visualization allows us to easily understand temperature fluctuations throughout April, providing insights into how temperatures have evolved over the specified years.
+
+::: callout-important
+## Takeaways
+
+-   In the dataset, the year 1983 stands out as having the highest temperatures for the majority of days in the month of April when compared to the other four years.
+
+-   On the other hand, 1993 appears to experience the coolest temperatures consistently throughout April, with the year 2003 following closely in terms of lower temperatures.
+
+-   While no obvious trend emerges from the heatmap, it is noteworthy that temperatures started on a higher note, then experiencing a subsequent drop, and then exhibiting a gradual fluctuation, with a general rise leading up to the most recent year in the dataset.
+:::
+
+## Cycle Plot
+
+```{r}
+avg_temperature <- temperature %>% 
+  group_by(Year) %>%
+  summarise(avgvalue = mean(`Mean Temperature (°C)`))
+```
+
+```{r}
+ggplotly(ggplot() + 
+  geom_line(data=temperature,
+            aes(x=Day, 
+                y=`Mean Temperature (°C)`,
+                group=Year), 
+            colour="black") +
+  geom_hline(aes(yintercept = avgvalue),
+             data=avg_temperature, 
+             linetype=6, 
+             colour="#2ec20a", 
+             size=0.7) +
+  facet_grid(~Year) +
+  labs(axis.text.x = element_blank(),
+       title = "") +
+  xlab("") +
+  ylab("°C") +
+  theme_tufte(base_family = "Helvetica"))
+```
+
+```{r}
+ggplot(temperature, 
+       aes(x = Year, 
+           y = `Mean Temperature (°C)`)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = 1,
+               outlier.shape = NA)
+```
+
+# Uncertainty
+
+```{r}
+temp_stat <- temperature %>%
+  group_by(Year) %>%
+  summarise(
+    n=n(),
+    mean=mean(`Mean Temperature (°C)`),
+    sd=sd(`Mean Temperature (°C)`)
+    ) %>%
+  mutate(se=sd/sqrt(n-1))
+```
+
+```{r}
+temp_df = temp_stat[, c("Year", "mean", "sd", "se")]
+
+bscols(
+  widths = c(6, 6),
+  ggplotly(
+    ggplot(temp_df) +
+      geom_errorbar(
+        aes(
+          x = Year,
+          ymin = mean - 2.58 * se,
+          ymax = mean + 2.58 * se
+        ),
+        width = 0.2,
+        colour = "black",
+        alpha = 0.9,
+        size = 0.5
+      ) +
+      geom_point(
+        aes(
+          x = Year,
+          y = mean,
+          text = paste(
+            "Year:", Year,
+            "<br>Temp:", round(mean, digits = 2),
+            "<br>95% CI:[",
+            round((mean - 2.58 * se), digits = 2), ",",
+            round((mean + 2.58 * se), digits = 2), "]"
+          )
+        ),
+        stat = "identity",
+        color = "#2ec20a",
+        size = 1.5,
+        alpha = 1
+      ) +
+      xlab("Year") +
+      ylab("Temp (°C)") +
+      theme_minimal() +
+      theme(
+        axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1)
+      ) +
+      ggtitle("99% CI of Avg Temp in April"),
+    tooltip = "text"
+  ),
+  DT::datatable(
+    temp_df,
+    rownames = FALSE,
+    class = "compact",
+    width = "100%",
+    options = list(pageLength = 10, scrollX = TRUE),
+    colnames = c("Year", "Avg Temp", "Std Dev", "Std Error")
+  ) %>%
+    formatRound(columns = c('mean', 'sd', 'se'), digits = 2)
+)
+```

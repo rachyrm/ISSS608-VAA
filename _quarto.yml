@@ -47,12 +47,22 @@ website:
       menu:
       - text: "In-Class Exercise 1"
         href: "In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html"
+      - text: "In-Class Exercise 2"
+        href: "In-Class_Ex/In-Class_Ex02/In-Class_Ex02.html"
+      - text: "In-Class Exercise 3"
+        href: "In-Class_Ex/In-Class_Ex03/In-Class_Ex03.html"
+      - text: "In-Class Exercise 4"
+        href: "In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html"
+      - text: "In-Class Exercise 5"
+        href: "In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html"
     - text: "Take-home Exercises"
       menu:
       - text: "Take-Home Exercise 1"
         href: "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html"
       - text: "Take-Home Exercise 2"
         href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
+      - text: "Take-Home Exercise 3"
+        href: "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html"
     right:
     - icon: house
       href: https://isss608-rachyrm.netlify.app/

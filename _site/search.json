@@ -562,9 +562,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Visual Analytics and Applications",
+    "title": "Rach's Visual Portfolio",
     "section": "",
-    "text": "hi"
+    "text": "Recent Projects:\n\n\n\n\n\n\n\n\n\n\n\n\n  \n\n\n\n\nHands-on Exercise 6: Visualising and Analysing Time-oriented Data\n\n\n\n\n\n\n\n\n\n\n\n\nFeb 14, 2024\n\n\nRachel Yee\n\n\n\n\n\n\n  \n\n\n\n\nTake Home Exercise 3: Be Weatherwise or Otherwise\n\n\n\n\n\n\n\n\n\n\n\n\nFeb 14, 2024\n\n\nRachel Yee\n\n\n\n\n\n\n  \n\n\n\n\nHands-on Exercise 5A: Creating Ternary Plot with R\n\n\n\n\n\n\n\n\n\n\n\n\nFeb 3, 2024\n\n\nRachel Yee\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html",
@@ -1342,5 +1342,40 @@
     "title": "Hands-on Exercise 6: Visualising and Analysing Time-oriented Data",
     "section": "Step 2: Plotting the slopegraph",
     "text": "Step 2: Plotting the slopegraph\nNext, code chunk below will be used to plot a basic slopegraph as shown below.\n\nrice %&gt;% \n  mutate(Year = factor(Year)) %&gt;%\n  filter(Year %in% c(1961, 1980)) %&gt;%\n  newggslopegraph(Year, Yield, Country,\n                Title = \"Rice Yield of Top 11 Asian Counties\",\n                SubTitle = \"1961-1980\",\n                Caption = \"Prepared by: Dr. Kam Tin Seong\")\n\n\n\n\n\n\n\n\n\n\nThing to learn from the code chunk above\n\n\n\nFor effective data visualisation design, factor() is used convert the value type of Year field from numeric to factor."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html",
+    "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html",
+    "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
+    "section": "",
+    "text": "In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic.\n\nThe report suggests an anticipated increase in daily mean temperatures ranging from 1.4 to 4.6 degrees. Additionally, the projection highlights an expected intensification of the contrast between wet months (November to January) and dry months (February and June to September). The objective is to leverage newly acquired skills in visual interactivity and uncertainty visualization methods to scrutinize and validate the assertions made in the report."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#loading-r-packages",
+    "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#loading-r-packages",
+    "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
+    "section": "Loading R packages",
+    "text": "Loading R packages\n\npacman::p_load(tidyverse, haven, ggiraph)"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#the-data",
+    "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#the-data",
+    "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
+    "section": "The Data",
+    "text": "The Data\nThis project will concentrate on extracting historical daily temperature or rainfall data from the Meteorological Service Singapore website. Specifically, the focus will be on the month of April for the years 1983, 1993, 2003, 2013, and 2023 in Changi area. Despite the wealth of data covering various areas in Singapore and multiple months, the project narrows its scope to derive insights from this targeted timeframe and specific set of years."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#importing-the-data",
+    "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#importing-the-data",
+    "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
+    "section": "Importing the Data",
+    "text": "Importing the Data\nThe code chunk below uses read_sas() of haven to import PISA data into R environment.\n\ndata_2023 &lt;- read_csv(\"data/2023.csv\")\n\n\ndata_2013 &lt;- read_csv(\"data/2013.csv\")\n\n\ndata_2003 &lt;- read_csv(\"data/2003.csv\")\n\n\ndata_1993 &lt;- read_csv(\"data/1993.csv\")\n\n\ndata_1983 &lt;- read_csv(\"data/1983.csv\")"
+  },
+  {
+    "objectID": "index.html#recent-projects",
+    "href": "index.html#recent-projects",
+    "title": "Rach's Visual Portfolio",
+    "section": "Recent Projects:",
+    "text": "Recent Projects:"
   }
 ]

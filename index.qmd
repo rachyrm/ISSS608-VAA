@@ -1,1 +1,15 @@
+---
+listing:
+  type: default
+  max-items: 3
+  contents: ["Hands-On_Ex/*/*.qmd", "In-Class_Ex/*/*.qmd", "Take-Home_Ex/*/*.qmd"]
+  sort: ["date desc"]
+toc: false
+back-to-top-navigation: true
+---
+
 ![](images/R%20(2).png){fig-align="center"}
+
+## **Recent Projects:**
+
+#### 

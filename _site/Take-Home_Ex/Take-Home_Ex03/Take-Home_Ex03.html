@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Rachel Yee">
+<meta name="dcterms.date" content="2024-02-14">
 
-<title>Rach’s Visual Portfolio</title>
+<title>Rach’s Visual Portfolio - Take Home Exercise 3: Be Weatherwise or Otherwise</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +22,60 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./images/title1.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/title1.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -61,51 +95,20 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./images/title1.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/title1.png" alt="" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -120,59 +123,59 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03A.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03A.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 3A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03B.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03B.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 3B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04A.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04A.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 4A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04B.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04B.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 4B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04C.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04C.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 4C</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04D.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04D.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 4D</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05A.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05A.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 5A</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05B.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05B.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 5B</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05C.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05C.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 5C</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05D.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05D.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 5D</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05E.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05E.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 5E</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.html" rel="" target="">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.html" rel="" target="">
  <span class="dropdown-text">Hands-On Exercise 6</span></a>
   </li>  
     </ul>
@@ -183,23 +186,23 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
         <li>
-    <a class="dropdown-item" href="./In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex01/In-Class_Ex01.html" rel="" target="">
  <span class="dropdown-text">In-Class Exercise 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./In-Class_Ex/In-Class_Ex02/In-Class_Ex02.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex02/In-Class_Ex02.html" rel="" target="">
  <span class="dropdown-text">In-Class Exercise 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./In-Class_Ex/In-Class_Ex03/In-Class_Ex03.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex03/In-Class_Ex03.html" rel="" target="">
  <span class="dropdown-text">In-Class Exercise 3</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html" rel="" target="">
  <span class="dropdown-text">In-Class Exercise 4</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html" rel="" target="">
  <span class="dropdown-text">In-Class Exercise 5</span></a>
   </li>  
     </ul>
@@ -210,15 +213,15 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercises">    
         <li>
-    <a class="dropdown-item" href="./Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html" rel="" target="">
+    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html" rel="" target="">
  <span class="dropdown-text">Take-Home Exercise 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html" rel="" target="">
+    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html" rel="" target="">
  <span class="dropdown-text">Take-Home Exercise 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html" rel="" target="">
+    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html" rel="" target="">
  <span class="dropdown-text">Take-Home Exercise 3</span></a>
   </li>  
     </ul>
@@ -251,118 +254,110 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#project-brief" id="toc-project-brief" class="nav-link active" data-scroll-target="#project-brief">Project Brief</a></li>
+  <li><a href="#project-objectives" id="toc-project-objectives" class="nav-link" data-scroll-target="#project-objectives">Project Objectives</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#loading-r-packages" id="toc-loading-r-packages" class="nav-link" data-scroll-target="#loading-r-packages">Loading R packages</a></li>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data">The Data</a></li>
+  <li><a href="#importing-the-data" id="toc-importing-the-data" class="nav-link" data-scroll-target="#importing-the-data">Importing the Data</a></li>
+  </ul></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-
-
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/R (2).png" class="img-fluid figure-img"></p>
-</figure>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take Home Exercise 3: Be Weatherwise or Otherwise</h1>
 </div>
-<section id="recent-projects" class="level2">
-<h2 class="anchored" data-anchor-id="recent-projects"><strong>Recent Projects:</strong></h2>
-<section id="section" class="level4">
-<h4 class="anchored" data-anchor-id="section"></h4>
 
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Rachel Yee </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 14, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">February 15, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="project-brief" class="level1">
+<h1>Project Brief</h1>
+<p>In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic.</p>
+<p><img src="https://isss608-ay2023-24jan.netlify.app/take-home_ex/img/Climate_change.jpg" class="img-fluid"></p>
+<p>The report suggests an anticipated increase in daily mean temperatures ranging from 1.4 to 4.6 degrees. Additionally, the projection highlights an expected intensification of the contrast between wet months (November to January) and dry months (February and June to September). The objective is to leverage newly acquired skills in visual interactivity and uncertainty visualization methods to scrutinize and validate the assertions made in the report.</p>
+</section>
+<section id="project-objectives" class="level1">
+<h1>Project Objectives</h1>
+<p>This project aims to employ <strong>interactive techniques</strong> and <strong>functions</strong> to unveil insights from historical daily temperature data sourced from the <a href="http://www.weather.gov.sg/home/">Meteorological Service Singapore</a> website. Focusing on daily temperatures in Changi for April across the years 1983, 1993, 2003, 2013 and 2023, the goal is to create analytics-driven visualizations. The primary objective of this project is to enhance user experience through interactive features, facilitating dynamic data exploration and visual storytelling.</p>
+</section>
+<section id="data-preparation" class="level1">
+<h1>Data Preparation</h1>
+<section id="loading-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="loading-r-packages">Loading R packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, haven, ggiraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="the-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-data">The Data</h2>
+<p>This project will concentrate on extracting <a href="http://www.weather.gov.sg/climate-historical-daily/">historical daily temperature or rainfall data</a> from the <a href="http://www.weather.gov.sg/home/">Meteorological Service Singapore</a> website. Specifically, the focus will be on the month of <strong>April</strong> for the years <strong>1983, 1993, 2003, 2013,</strong> and <strong>2023</strong> in <strong>Changi</strong> area. Despite the wealth of data covering various areas in Singapore and multiple months, the project narrows its scope to derive insights from this targeted timeframe and specific set of years.</p>
+</section>
+<section id="importing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-data">Importing the Data</h2>
+<p>The code chunk below uses read_sas() of <a href="https://haven.tidyverse.org/reference/index.html">haven</a> to import PISA data into R environment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_2023 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/2023.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_2013 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/2013.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_2003 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/2003.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data_1993 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/1993.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_1983 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/1983.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="data-wrangling" class="level1">
+<h1>Data Wrangling</h1>
 
 
 </section>
-</section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1707840000000" data-listing-file-modified-sort="1707920180279" data-listing-date-modified-sort="1707920180000" data-listing-reading-time-sort="10">
-<div class="thumbnail">
-<p><a href="./Hands-On_Ex/Hands-on_Ex06/Hands-on_Ex06.html"> <p class="card-img-top"><img src="https://r4va.netlify.app/chap17/img/image01.png"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./Hands-On_Ex/Hands-on_Ex06/Hands-on_Ex06.html">
-<h3 class="no-anchor listing-title">
-Hands-on Exercise 6: Visualising and Analysing Time-oriented Data
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-In this exercise, we will be using R packages to do the following data visualisations:
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./Hands-On_Ex/Hands-on_Ex06/Hands-on_Ex06.html">
-<div class="listing-date">
-Feb 14, 2024
-</div>
-<div class="listing-author">
-Rachel Yee
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1707840000000" data-listing-file-modified-sort="1707987902033" data-listing-date-modified-sort="1707987902000" data-listing-reading-time-sort="2">
-<div class="thumbnail">
-<p><a href="./Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html"> <p class="card-img-top"><img src="https://isss608-ay2023-24jan.netlify.app/take-home_ex/img/Climate_change.jpg"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html">
-<h3 class="no-anchor listing-title">
-Take Home Exercise 3: Be Weatherwise or Otherwise
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic.
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html">
-<div class="listing-date">
-Feb 14, 2024
-</div>
-<div class="listing-author">
-Rachel Yee
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1706889600000" data-listing-file-modified-sort="1706944903115" data-listing-date-modified-sort="1706944903000" data-listing-reading-time-sort="4">
-<div class="thumbnail">
-<p><a href="./Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05A.html"> <p class="card-img-top"><img src="Hands-On_Ex\Hands-on_Ex05\Hands-on_Ex05A_files\figure-html\unnamed-chunk-6-1.png"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05A.html">
-<h3 class="no-anchor listing-title">
-Hands-on Exercise 5A: Creating Ternary Plot with R
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
-Ternary plots are a way of displaying the distribution and variability of three-part compositional data. (For example, the proportion of aged, economy active and young…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./Hands-On_Ex/Hands-on_Ex05/Hands-on_Ex05A.html">
-<div class="listing-date">
-Feb 3, 2024
-</div>
-<div class="listing-author">
-Rachel Yee
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
