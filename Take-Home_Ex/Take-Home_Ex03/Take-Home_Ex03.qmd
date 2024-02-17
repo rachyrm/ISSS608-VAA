@@ -12,11 +12,9 @@ editor: visual
 
 # Project Brief
 
-In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic.
+In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic, by leveraging newly acquired methods involving visual interactivity and visualising uncertainty methods to validate the claims made in the report.
 
 ![](https://isss608-ay2023-24jan.netlify.app/take-home_ex/img/Climate_change.jpg)
-
-The report suggests an anticipated increase in daily mean temperatures ranging from 1.4 to 4.6 degrees. Additionally, the projection highlights an expected intensification of the contrast between wet months (November to January) and dry months (February and June to September). The objective is to leverage newly acquired skills in visual interactivity and uncertainty visualization methods to scrutinize and validate the assertions made in the report.
 
 # Project Objectives
 
@@ -32,31 +30,43 @@ pacman::p_load(tidyverse, haven, ggiraph, ggthemes, ggdist, plotly, DT, ggplot2,
 
 ## The Data
 
-This project will concentrate on extracting [historical daily temperature or rainfall data](http://www.weather.gov.sg/climate-historical-daily/) from the [Meteorological Service Singapore](http://www.weather.gov.sg/home/) website. Specifically, the focus will be on the month of **April** for the years **1983, 1993, 2003, 2013,** and **2023** in **Changi** area. Despite the wealth of data covering various areas in Singapore and multiple months, the project narrows its scope to derive insights from this targeted timeframe and specific set of years.
+This project will concentrate on extracting [historical daily temperature or rainfall data](http://www.weather.gov.sg/climate-historical-daily/) from the [Meteorological Service Singapore](http://www.weather.gov.sg/home/) website. Despite the numerous data covering various areas in Singapore and multiple months, the focus will be on the month of **April** for the years **1983, 1993, 2003, 2013,** and **2023** in **Changi** area specifically.
 
 ## Importing the Data
 
-The code chunk below uses read_sas() of [haven](https://haven.tidyverse.org/reference/index.html) to import PISA data into R environment.
+The code chunks below uses read_sas() of [haven](https://haven.tidyverse.org/reference/index.html) to import data from different years into R environment.
+
+::: panel-tabset
+## 2023
 
 ```{r}
 data_2023 <- read_csv("data/2023.csv")
 ```
 
+## 2013
+
 ```{r}
 data_2013 <- read_csv("data/2013.csv")
 ```
+
+## 2003
 
 ```{r}
 data_2003 <- read_csv("data/2003.csv")
 ```
 
+## 1993
+
 ```{r}
 data_1993 <- read_csv("data/1993.csv")
 ```
 
+## 1983
+
 ```{r}
 data_1983 <- read_csv("data/1983.csv")
 ```
+:::
 
 # Data Wrangling
 
@@ -66,11 +76,32 @@ The below code chunk will combine the data of 5 years into one table.
 temperature <- rbind(data_2023,data_2013,data_2003,data_1993,data_1983)
 ```
 
-This code converts the "Year" column in the "temperature" dataset to a factor. So, the overall effect of this code is to convert the "Year" column in the "temperature" dataset from a numeric or character type into a factor type. This is often done when the "Year" column contains discrete and unordered categories, such as years, and you want to treat them as factors rather than numerical values. It's especially useful for categorical data in statistical modeling and visualization.
+This code below converts the "Year" and "Day" column in the "temperature" dataset to a factor. This is done when the column contains discrete and unordered categories, to treat them as factors rather than numerical values, which is useful for categorical data.
 
 ```{r}
 temperature$Year = as.factor(temperature$Year)
 temperature$Day = as.factor(temperature$Day)
+```
+
+The provided code calculates the average mean temperature each year, grouping the data by years. The results are stored in a new data frame called "avg_temperature", which will be used for the cycle plot later.
+
+```{r}
+avg_temperature <- temperature %>% 
+  group_by(Year) %>%
+  summarise(avgvalue = mean(`Mean Temperature (°C)`))
+```
+
+The below code computes the count, mean, and standard deviation of the 'Mean Temperature (°C)' variable within each year. Additionally, the standard error is calculated and added as a new variable. This summarization yields key statistical measures which will be used later to visualize uncertainty.
+
+```{r}
+temp_stat <- temperature %>%
+  group_by(Year) %>%
+  summarise(
+    n=n(),
+    mean=mean(`Mean Temperature (°C)`),
+    sd=sd(`Mean Temperature (°C)`)
+    ) %>%
+  mutate(se=sd/sqrt(n-1))
 ```
 
 # Data Visualization
@@ -78,6 +109,8 @@ temperature$Day = as.factor(temperature$Day)
 ## Calendar Heatmap
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show code"
 ggplotly(ggplot(temperature, 
        aes(Day, 
            Year, 
@@ -87,7 +120,7 @@ geom_tile(color = "black",
 theme_tufte(base_family = "Helvetica") + 
 scale_fill_gradient(name = "°C",
                     low = "light yellow", 
-                    high = "dark green") +
+                    high = "#003200") +
 labs(x = NULL, 
      y = NULL, 
      title = "Temperatures in Month of April") +
@@ -98,6 +131,18 @@ theme(axis.ticks = element_blank(),
 ```
 
 This graph visually represents temperature variations in the month of April across different years. Each square on the plot corresponds to a specific day and year, with the color inside representing the mean temperature in degrees (°C). The color scale ranges from light yellow to dark green, indicating lower to higher temperatures. The graph follows a tile plot style, showcasing patterns and trends in temperature changes over time. The y-axis is specifically scaled for the years 1983, 1993, 2003, 2013, and 2023. The visualization allows us to easily understand temperature fluctuations throughout April, providing insights into how temperatures have evolved over the specified years.
+
+::: callout-important
+## Interactivity Features
+
+1.  **Hover Information**: When the cursor hovers over a specific tile in the heatmap, a tooltip displays additional information about that data point, including the Day, Year, and the corresponding Mean Temperature (°C).
+
+2.  **Zooming**: You can zoom in and out of the plot to explore specific regions or time periods.
+
+3.  **Panning**: You can pan across the plot to navigate through different sections.
+
+4.  **Legend Interaction**: The legend allows interactive selection for the temperature range (°C) by clicking on the legend items, which can be used to explore specific temperature intervals.
+:::
 
 ::: callout-important
 ## Takeaways
@@ -112,12 +157,8 @@ This graph visually represents temperature variations in the month of April acro
 ## Cycle Plot
 
 ```{r}
-avg_temperature <- temperature %>% 
-  group_by(Year) %>%
-  summarise(avgvalue = mean(`Mean Temperature (°C)`))
-```
-
-```{r}
+#| code-fold: true
+#| code-summary: "Show code"
 ggplotly(ggplot() + 
   geom_line(data=temperature,
             aes(x=Day, 
@@ -137,32 +178,38 @@ ggplotly(ggplot() +
   theme_tufte(base_family = "Helvetica"))
 ```
 
-```{r}
-ggplot(temperature, 
-       aes(x = Year, 
-           y = `Mean Temperature (°C)`)) +
-  stat_halfeye(adjust = 0.5,
-               justification = -0.2,
-               .width = 0,
-               point_colour = NA) +
-  geom_boxplot(width = 1,
-               outlier.shape = NA)
-```
+The plot showcases the daily mean temperatures in the month of April across multiple years, with each year represented by a distinct line. Additionally, the horizontal green lines indicate the average temperature for each year. The plot is divided into facets, with each facet corresponding to a specific year, facilitating a clear comparison of temperature trends.
+
+::: callout-important
+## **Interactivity Features**
+
+1.  **Tooltip:** Hovering over data points reveals detailed information, such as the specific temperature value at that point.
+
+2.  **Legend Interaction:** Clicking on the legend entries toggles the visibility of the corresponding year's line, enabling users to focus on specific years and declutter the plot.
+
+3.  **Zooming and Panning:** You can zoom in on specific regions of the plot or pan across the entire visualization to closely examine temperature variations across days and years.
+:::
+
+::: callout-important
+## **Takeaways**
+
+\- Other than the change from year 1983 to 1993, which shows a huge drop in temperature. The temperature changes for the corresponding years **increased at an average rate of 0.32°C** per decade as shown in the table below:
+
+|             |                        |
+|:-----------:|:----------------------:|
+|  **Years**  | **Temperature Change** |
+| 1993 - 2003 |          0.29          |
+| 2003 - 2013 |          0.33          |
+| 2013 - 2023 |          0.33          |
+
+\- This validates the claim made in the report shown at the beginning of this exercise, where "annual mean temperatures rose at an average rate of 0.25°C per decade".
+:::
 
 # Uncertainty
 
 ```{r}
-temp_stat <- temperature %>%
-  group_by(Year) %>%
-  summarise(
-    n=n(),
-    mean=mean(`Mean Temperature (°C)`),
-    sd=sd(`Mean Temperature (°C)`)
-    ) %>%
-  mutate(se=sd/sqrt(n-1))
-```
-
-```{r}
+#| code-fold: true
+#| code-summary: "Show code"
 temp_df = temp_stat[, c("Year", "mean", "sd", "se")]
 
 bscols(
@@ -187,7 +234,7 @@ bscols(
           text = paste(
             "Year:", Year,
             "<br>Temp:", round(mean, digits = 2),
-            "<br>95% CI:[",
+            "<br>99% CI:[",
             round((mean - 2.58 * se), digits = 2), ",",
             round((mean + 2.58 * se), digits = 2), "]"
           )
@@ -217,3 +264,17 @@ bscols(
     formatRound(columns = c('mean', 'sd', 'se'), digits = 2)
 )
 ```
+
+This R code combines both graphical and tabular representations of temperature data for the month of April across different years, which are arranged side by side. On the left, there is a graph that shows a plot of interactive error bars for the 99% confidence interval of mean temperature in the months of April for the five years. On the other hand, the right side shows a compact table that complements the visual representation, providing a numerical summary of information including the standard deviation and standard error. Upon mouse hover, on the point of the graph, each year's mean temperature and its 99% confidence interval range.
+
+| Year | 99% Confidence Interval |
+|:----:|:-----------------------:|
+| 1983 |    \[28.95, 29.81\]     |
+| 1993 |    \[27.17, 28.01\]     |
+| 2003 |    \[27.55, 28.22\]     |
+| 2013 |    \[27.76, 28.66\]     |
+| 2023 |    \[28.17, 28.92\]     |
+
+# Conclusion
+
+In this exercise, the April temperature data from 1983, 1993, 2003, 2013 and 2023 were visualized and compared, to show trends. Other than the temperature change from year 1983 to 1993, a pattern can be seen, with results showing a constant increase of temperature every decade, which validates the claim in the infographic by Ministry of Sustainability and the Environment.

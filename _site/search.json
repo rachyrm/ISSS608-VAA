@@ -1348,28 +1348,28 @@
     "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html",
     "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
     "section": "",
-    "text": "In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic.\n\nThe report suggests an anticipated increase in daily mean temperatures ranging from 1.4 to 4.6 degrees. Additionally, the projection highlights an expected intensification of the contrast between wet months (November to January) and dry months (February and June to September). The objective is to leverage newly acquired skills in visual interactivity and uncertainty visualization methods to scrutinize and validate the assertions made in the report."
+    "text": "In this project, the focus is on validating temperature projections outlined in an office report, as indicated in the infographic, by leveraging newly acquired methods involving visual interactivity and visualising uncertainty methods to validate the claims made in the report."
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#loading-r-packages",
     "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#loading-r-packages",
     "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
     "section": "Loading R packages",
-    "text": "Loading R packages\n\npacman::p_load(tidyverse, haven, ggiraph)"
+    "text": "Loading R packages\n\npacman::p_load(tidyverse, haven, ggiraph, ggthemes, ggdist, plotly, DT, ggplot2, crosstalk)"
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#the-data",
     "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#the-data",
     "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
     "section": "The Data",
-    "text": "The Data\nThis project will concentrate on extracting historical daily temperature or rainfall data from the Meteorological Service Singapore website. Specifically, the focus will be on the month of April for the years 1983, 1993, 2003, 2013, and 2023 in Changi area. Despite the wealth of data covering various areas in Singapore and multiple months, the project narrows its scope to derive insights from this targeted timeframe and specific set of years."
+    "text": "The Data\nThis project will concentrate on extracting historical daily temperature or rainfall data from the Meteorological Service Singapore website. Despite the numerous data covering various areas in Singapore and multiple months, the focus will be on the month of April for the years 1983, 1993, 2003, 2013, and 2023 in Changi area specifically."
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#importing-the-data",
     "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#importing-the-data",
     "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
     "section": "Importing the Data",
-    "text": "Importing the Data\nThe code chunk below uses read_sas() of haven to import PISA data into R environment.\n\ndata_2023 &lt;- read_csv(\"data/2023.csv\")\n\n\ndata_2013 &lt;- read_csv(\"data/2013.csv\")\n\n\ndata_2003 &lt;- read_csv(\"data/2003.csv\")\n\n\ndata_1993 &lt;- read_csv(\"data/1993.csv\")\n\n\ndata_1983 &lt;- read_csv(\"data/1983.csv\")"
+    "text": "Importing the Data\nThe code chunks below uses read_sas() of haven to import data from different years into R environment.\n\n20232013200319931983\n\n\n\ndata_2023 &lt;- read_csv(\"data/2023.csv\")\n\n\n\n\ndata_2013 &lt;- read_csv(\"data/2013.csv\")\n\n\n\n\ndata_2003 &lt;- read_csv(\"data/2003.csv\")\n\n\n\n\ndata_1993 &lt;- read_csv(\"data/1993.csv\")\n\n\n\n\ndata_1983 &lt;- read_csv(\"data/1983.csv\")"
   },
   {
     "objectID": "index.html#recent-projects",
@@ -1377,5 +1377,19 @@
     "title": "Rach's Visual Portfolio",
     "section": "Recent Projects:",
     "text": "Recent Projects:"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#calendar-heatmap",
+    "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#calendar-heatmap",
+    "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
+    "section": "Calendar Heatmap",
+    "text": "Calendar Heatmap\n\n\nShow code\nggplotly(ggplot(temperature, \n       aes(Day, \n           Year, \n           fill = `Mean Temperature (°C)`)) +\ngeom_tile(color = \"black\", \n          size = 0.1) + \ntheme_tufte(base_family = \"Helvetica\") + \nscale_fill_gradient(name = \"°C\",\n                    low = \"light yellow\", \n                    high = \"#003200\") +\nlabs(x = NULL, \n     y = NULL, \n     title = \"Temperatures in Month of April\") +\ntheme(axis.ticks = element_blank(),\n      plot.title = element_text(hjust = 0.5),\n      legend.title = element_text(size = 8),\n      legend.text = element_text(size = 6)))\n\n\n\n\n\n\nThis graph visually represents temperature variations in the month of April across different years. Each square on the plot corresponds to a specific day and year, with the color inside representing the mean temperature in degrees (°C). The color scale ranges from light yellow to dark green, indicating lower to higher temperatures. The graph follows a tile plot style, showcasing patterns and trends in temperature changes over time. The y-axis is specifically scaled for the years 1983, 1993, 2003, 2013, and 2023. The visualization allows us to easily understand temperature fluctuations throughout April, providing insights into how temperatures have evolved over the specified years.\n\n\n\n\n\n\nInteractivity Features\n\n\n\n\nHover Information: When the cursor hovers over a specific tile in the heatmap, a tooltip displays additional information about that data point, including the Day, Year, and the corresponding Mean Temperature (°C).\nZooming: You can zoom in and out of the plot to explore specific regions or time periods.\nPanning: You can pan across the plot to navigate through different sections.\nLegend Interaction: The legend allows interactive selection for the temperature range (°C) by clicking on the legend items, which can be used to explore specific temperature intervals.\n\n\n\n\n\n\n\n\n\nTakeaways\n\n\n\n\nIn the dataset, the year 1983 stands out as having the highest temperatures for the majority of days in the month of April when compared to the other four years.\nOn the other hand, 1993 appears to experience the coolest temperatures consistently throughout April, with the year 2003 following closely in terms of lower temperatures.\nWhile no obvious trend emerges from the heatmap, it is noteworthy that temperatures started on a higher note, then experiencing a subsequent drop, and then exhibiting a gradual fluctuation, with a general rise leading up to the most recent year in the dataset."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#cycle-plot",
+    "href": "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html#cycle-plot",
+    "title": "Take Home Exercise 3: Be Weatherwise or Otherwise",
+    "section": "Cycle Plot",
+    "text": "Cycle Plot\n\n\nShow code\nggplotly(ggplot() + \n  geom_line(data=temperature,\n            aes(x=Day, \n                y=`Mean Temperature (°C)`,\n                group=Year), \n            colour=\"black\") +\n  geom_hline(aes(yintercept = avgvalue),\n             data=avg_temperature, \n             linetype=6, \n             colour=\"#2ec20a\", \n             size=0.7) +\n  facet_grid(~Year) +\n  labs(axis.text.x = element_blank(),\n       title = \"\") +\n  xlab(\"\") +\n  ylab(\"°C\") +\n  theme_tufte(base_family = \"Helvetica\"))\n\n\n\n\n\n\nThe plot showcases the daily mean temperatures in the month of April across multiple years, with each year represented by a distinct line. Additionally, the horizontal green lines indicate the average temperature for each year. The plot is divided into facets, with each facet corresponding to a specific year, facilitating a clear comparison of temperature trends.\n\n\n\n\n\n\nInteractivity Features\n\n\n\n\nTooltip: Hovering over data points reveals detailed information, such as the specific temperature value at that point.\nLegend Interaction: Clicking on the legend entries toggles the visibility of the corresponding year’s line, enabling users to focus on specific years and declutter the plot.\nZooming and Panning: You can zoom in on specific regions of the plot or pan across the entire visualization to closely examine temperature variations across days and years.\n\n\n\n\n\n\n\n\n\nTakeaways\n\n\n\n- Other than the change from year 1983 to 1993, which shows a huge drop in temperature. The temperature changes for the corresponding years increased at an average rate of 0.32°C per decade as shown in the table below:\n\n\n\nYears\nTemperature Change\n\n\n1993 - 2003\n0.29\n\n\n2003 - 2013\n0.33\n\n\n2013 - 2023\n0.33\n\n\n\n- This validates the claim made in the report shown at the beginning of this exercise, where “annual mean temperatures rose at an average rate of 0.25°C per decade”."
   }
 ]
