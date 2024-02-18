@@ -208,6 +208,8 @@ The plot showcases the daily mean temperatures in the month of April across mult
 ## Animated Bubble Plot
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show code"
 gg <- ggplot(temperature, 
        aes(x = Day, 
            y = `Mean Temperature (°C)`,
