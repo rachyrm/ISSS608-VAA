@@ -205,7 +205,35 @@ The plot showcases the daily mean temperatures in the month of April across mult
 \- This validates the claim made in the report shown at the beginning of this exercise, where "annual mean temperatures rose at an average rate of 0.25°C per decade".
 :::
 
-# Uncertainty
+## Animated Bubble Plot
+
+```{r}
+gg <- ggplot(temperature, 
+       aes(x = Day, 
+           y = `Mean Temperature (°C)`,
+           size = `Mean Temperature (°C)`,
+           color = Year)) +
+  geom_point(aes(size = `Mean Temperature (°C)`, frame = Day),
+             alpha = 0.7) +
+  scale_colour_manual(values = c("1983" = "#DC7633", 
+                                  "1993" = "#A569BD", 
+                                  "2003" = "#58D68D", 
+                                  "2013" = "#F4D03F", 
+                                  "2023" = "#5DADE2")) +
+  scale_size(range = c(2, 12)) +
+  labs(x = 'Days in April', 
+       y = 'Temperature') + 
+  theme(legend.position='bottom') +
+  guides(color = guide_legend(title = "Year", 
+                             override.aes = list(size = 3),
+                             ncol = 1))
+
+ggplotly(gg)
+```
+
+The graph above employs points that vary in both size and color, with the y axis representing mean temperature, and the x axis representing the days in April. As the animation progresses through each day of the month, viewers can discern patterns and trends in temperature changes. Each year is represented by a different color, while the dynamic size of the points describes the value of the temperture.
+
+## Uncertainty
 
 ```{r}
 #| code-fold: true
