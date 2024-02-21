@@ -1,0 +1,11 @@
+---
+title: "Hands-on Exercise 9: Visualising and Analysing Text Data"
+author: "Rachel Yee"
+date: "20 February 2024"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---

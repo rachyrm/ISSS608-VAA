@@ -1867,5 +1867,138 @@
     "title": "Hands-on Exercise 8: Modelling, Visualising and Analysing Network Data with R",
     "section": "Interactivity",
     "text": "Interactivity\nIn the code chunk below, visOptions() is used to incorporate interactivity features in the data visualisation.\n\nThe argument highlightNearest highlights nearest when clicking a node.\nThe argument nodesIdSelection adds an id node selection creating an HTML select element.\n\n\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %&gt;%\n  visIgraphLayout(layout = \"layout_with_fr\") %&gt;%\n  visOptions(highlightNearest = TRUE,\n             nodesIdSelection = TRUE) %&gt;%\n  visLegend() %&gt;%\n  visLayout(randomSeed = 123)\n\n\n\n\n\nVisit Option to find out more about visOption's argument."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "",
+    "text": "The goal of this exercise is to:\n\ncreate bullet chart by using ggplot2,\ncreate sparklines by using ggplot2 ,\nbuild industry standard dashboard by using R Shiny."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#the-data-set",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#the-data-set",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "The data set",
+    "text": "The data set\nFor the purpose of this study, a personal database in Microsoft Access mdb format called Coffee Chain will be used."
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#importing-database-into-r",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#importing-database-into-r",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Importing database into R",
+    "text": "Importing database into R\nIn the code chunk below, odbcConnectAccess() of RODBC package is used used to import a database query table into R.\n\nlibrary(RODBC)\ncon &lt;- odbcConnectAccess2007('data/Coffee Chain.mdb')\ncoffeechain &lt;- sqlQuery(con, 'CoffeeChain Query')\nwrite_rds(coffeechain, \"data/CoffeeChain.rds\")\nodbcClose(con)\n\n\n\n\n\n\n\nNote\n\n\n\nBefore running the code chunk, you need to change the R system to 32bit version. This is because the odbcConnectAccess() is based on 32bit and not 64bit"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#data-preparation",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#data-preparation",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Data Preparation",
+    "text": "Data Preparation\nThe code chunk below is used to import CoffeeChain.rds into R.\n\ncoffeechain &lt;- read_rds(\"data/rds/CoffeeChain.rds\")\n\nThe code chunk below is used to aggregate Sales and Budgeted Sales at the Product level.\n\nproduct &lt;- coffeechain %&gt;%\n  group_by(`Product`) %&gt;%\n  summarise(`target` = sum(`Budget Sales`),\n            `current` = sum(`Sales`)) %&gt;%\n  ungroup()"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#bullet-chart-in-ggplot2",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#bullet-chart-in-ggplot2",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Bullet chart in ggplot2",
+    "text": "Bullet chart in ggplot2\nThe code chunk below is used to plot the bullet charts using ggplot2 functions.\n\nggplot(product, aes(Product, current)) + \n  geom_col(aes(Product, max(target) * 1.01),\n           fill=\"grey85\", width=0.85) +\n  geom_col(aes(Product, target * 0.75),\n           fill=\"grey60\", width=0.85) +\n  geom_col(aes(Product, target * 0.5),\n           fill=\"grey50\", width=0.85) +\n  geom_col(aes(Product, current), \n           width=0.35,\n           fill = \"black\") + \n  geom_errorbar(aes(y = target,\n                    x = Product, \n                    ymin = target,\n                    ymax= target), \n                width = .4,\n                colour = \"red\",\n                size = 1) +\n  coord_flip()"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#preparing-the-data",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#preparing-the-data",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Preparing the data",
+    "text": "Preparing the data\n\nsales_report &lt;- coffeechain %&gt;%\n  filter(Date &gt;= \"2013-01-01\") %&gt;%\n  mutate(Month = month(Date)) %&gt;%\n  group_by(Month, Product) %&gt;%\n  summarise(Sales = sum(Sales)) %&gt;%\n  ungroup() %&gt;%\n  select(Month, Product, Sales)\n\nThe code chunk below is used to compute the minimum, maximum and end of month sales.\n\nmins &lt;- group_by(sales_report, Product) %&gt;% \n  slice(which.min(Sales))\nmaxs &lt;- group_by(sales_report, Product) %&gt;% \n  slice(which.max(Sales))\nends &lt;- group_by(sales_report, Product) %&gt;% \n  filter(Month == max(Month))\n\nThe code chunk below is used to compute the 25 and 75 quantiles.\n\nquarts &lt;- sales_report %&gt;%\n  group_by(Product) %&gt;%\n  summarise(quart1 = quantile(Sales, \n                              0.25),\n            quart2 = quantile(Sales, \n                              0.75)) %&gt;%\n  right_join(sales_report)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#sparklines-in-ggplot2",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#sparklines-in-ggplot2",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "sparklines in ggplot2",
+    "text": "sparklines in ggplot2\n\nggplot(sales_report, aes(x=Month, y=Sales)) + \n  facet_grid(Product ~ ., scales = \"free_y\") + \n  geom_ribbon(data = quarts, aes(ymin = quart1, max = quart2), \n              fill = 'grey90') +\n  geom_line(size=0.3) +\n  geom_point(data = mins, col = 'red') +\n  geom_point(data = maxs, col = 'blue') +\n  geom_text(data = mins, aes(label = Sales), vjust = -1) +\n  geom_text(data = maxs, aes(label = Sales), vjust = 2.5) +\n  geom_text(data = ends, aes(label = Sales), hjust = 0, nudge_x = 0.5) +\n  geom_text(data = ends, aes(label = Product), hjust = 0, nudge_x = 1.0) +\n  expand_limits(x = max(sales_report$Month) + \n                  (0.25 * (max(sales_report$Month) - min(sales_report$Month)))) +\n  scale_x_continuous(breaks = seq(1, 12, 1)) +\n  scale_y_continuous(expand = c(0.1, 0)) +\n  theme_tufte(base_size = 3, base_family = \"Helvetica\") +\n  theme(axis.title=element_blank(), axis.text.y = element_blank(), \n        axis.ticks = element_blank(), strip.text = element_blank())"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-a-simple-bullet-chart",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-a-simple-bullet-chart",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Plotting a simple bullet chart",
+    "text": "Plotting a simple bullet chart\nIn this section, you will learn how to prepare a bullet chart report by using functions of gt and gtExtras packages.\n\nproduct %&gt;%\n  gt::gt() %&gt;%\n  gt_plt_bullet(column = current, \n              target = target, \n              width = 60,\n              palette = c(\"lightblue\", \n                          \"black\")) %&gt;%\n  gt_theme_538()\n\n\n\n\n\n  \n    \n      Product\n      current\n    \n  \n  \n    Amaretto\n          \n    Caffe Latte\n          \n    Caffe Mocha\n          \n    Chamomile\n          \n    Colombian\n          \n    Darjeeling\n          \n    Decaf Espresso\n          \n    Decaf Irish Cream\n          \n    Earl Grey\n          \n    Green Tea\n          \n    Lemon\n          \n    Mint\n          \n    Regular Espresso"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-coffechain-sales-report",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-coffechain-sales-report",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Plotting Coffechain Sales report",
+    "text": "Plotting Coffechain Sales report\n\nreport %&gt;%\n  group_by(Product) %&gt;%\n  summarize('Monthly Sales' = list(Sales), \n            .groups = \"drop\") %&gt;%\n   gt() %&gt;%\n   gt_plt_sparkline('Monthly Sales',\n                    same_limit = FALSE)\n\n\n\n\n\n  \n    \n      Product\n      Monthly Sales\n    \n  \n  \n    Amaretto\n          1.2K\n    Caffe Latte\n          1.5K\n    Caffe Mocha\n          3.7K\n    Chamomile\n          3.3K\n    Colombian\n          5.5K\n    Darjeeling\n          3.0K\n    Decaf Espresso\n          3.2K\n    Decaf Irish Cream\n          2.7K\n    Earl Grey\n          3.0K\n    Green Tea\n          1.5K\n    Lemon\n          4.4K\n    Mint\n          1.5K\n    Regular Espresso\n          1.1K"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-statistics",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-statistics",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Adding statistics",
+    "text": "Adding statistics\nFirst, calculate summary statistics by using the code chunk below.\n\nreport %&gt;% \n  group_by(Product) %&gt;% \n  summarise(\"Min\" = min(Sales, na.rm = T),\n            \"Max\" = max(Sales, na.rm = T),\n            \"Average\" = mean(Sales, na.rm = T)\n            ) %&gt;%\n  gt() %&gt;%\n  fmt_number(columns = 4,\n    decimals = 2)\n\n\n\n\n\n  \n    \n      Product\n      Min\n      Max\n      Average\n    \n  \n  \n    Amaretto\n1016\n1210\n1,119.00\n    Caffe Latte\n1398\n1653\n1,528.33\n    Caffe Mocha\n3322\n3828\n3,613.92\n    Chamomile\n2967\n3395\n3,217.42\n    Colombian\n5132\n5961\n5,457.25\n    Darjeeling\n2926\n3281\n3,112.67\n    Decaf Espresso\n3181\n3493\n3,326.83\n    Decaf Irish Cream\n2463\n2901\n2,648.25\n    Earl Grey\n2730\n3005\n2,841.83\n    Green Tea\n1339\n1476\n1,398.75\n    Lemon\n3851\n4418\n4,080.83\n    Mint\n1388\n1669\n1,519.17\n    Regular Espresso\n890\n1218\n1,023.42"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#combining-the-data.frame",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#combining-the-data.frame",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Combining the data.frame",
+    "text": "Combining the data.frame\nNext, use the code chunk below to add the statistics on the table.\n\nspark &lt;- report %&gt;%\n  group_by(Product) %&gt;%\n  summarize('Monthly Sales' = list(Sales), \n            .groups = \"drop\")\n\n\nsales &lt;- report %&gt;% \n  group_by(Product) %&gt;% \n  summarise(\"Min\" = min(Sales, na.rm = T),\n            \"Max\" = max(Sales, na.rm = T),\n            \"Average\" = mean(Sales, na.rm = T)\n            )\n\n\nsales_data = left_join(sales, spark)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-the-updated-data.table",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-the-updated-data.table",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Plotting the updated data.table",
+    "text": "Plotting the updated data.table\n\nsales_data %&gt;%\n  gt() %&gt;%\n  gt_plt_sparkline('Monthly Sales',\n                   same_limit = FALSE)\n\n\n\n\n\n  \n    \n      Product\n      Min\n      Max\n      Average\n      Monthly Sales\n    \n  \n  \n    Amaretto\n1016\n1210\n1119.000\n          1.2K\n    Caffe Latte\n1398\n1653\n1528.333\n          1.5K\n    Caffe Mocha\n3322\n3828\n3613.917\n          3.7K\n    Chamomile\n2967\n3395\n3217.417\n          3.3K\n    Colombian\n5132\n5961\n5457.250\n          5.5K\n    Darjeeling\n2926\n3281\n3112.667\n          3.0K\n    Decaf Espresso\n3181\n3493\n3326.833\n          3.2K\n    Decaf Irish Cream\n2463\n2901\n2648.250\n          2.7K\n    Earl Grey\n2730\n3005\n2841.833\n          3.0K\n    Green Tea\n1339\n1476\n1398.750\n          1.5K\n    Lemon\n3851\n4418\n4080.833\n          4.4K\n    Mint\n1388\n1669\n1519.167\n          1.5K\n    Regular Espresso\n890\n1218\n1023.417\n          1.1K"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#combining-bullet-chart-and-sparklines",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#combining-bullet-chart-and-sparklines",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Combining bullet chart and sparklines",
+    "text": "Combining bullet chart and sparklines\nSimilarly, we can combining the bullet chart and sparklines using the steps below.\n\nbullet &lt;- coffeechain %&gt;%\n  filter(Date &gt;= \"2013-01-01\") %&gt;%\n  group_by(`Product`) %&gt;%\n  summarise(`Target` = sum(`Budget Sales`),\n            `Actual` = sum(`Sales`)) %&gt;%\n  ungroup() \n\n\nsales_data = sales_data %&gt;%\n  left_join(bullet)\n\n\nsales_data %&gt;%\n  gt() %&gt;%\n  gt_plt_sparkline('Monthly Sales') %&gt;%\n  gt_plt_bullet(column = Actual, \n                target = Target, \n                width = 28,\n                palette = c(\"lightblue\", \n                          \"black\")) %&gt;%\n  gt_theme_538()\n\n\n\n\n\n  \n    \n      Product\n      Min\n      Max\n      Average\n      Monthly Sales\n      Actual\n    \n  \n  \n    Amaretto\n1016\n1210\n1119.000\n          1.2K\n          \n    Caffe Latte\n1398\n1653\n1528.333\n          1.5K\n          \n    Caffe Mocha\n3322\n3828\n3613.917\n          3.7K\n          \n    Chamomile\n2967\n3395\n3217.417\n          3.3K\n          \n    Colombian\n5132\n5961\n5457.250\n          5.5K\n          \n    Darjeeling\n2926\n3281\n3112.667\n          3.0K\n          \n    Decaf Espresso\n3181\n3493\n3326.833\n          3.2K\n          \n    Decaf Irish Cream\n2463\n2901\n2648.250\n          2.7K\n          \n    Earl Grey\n2730\n3005\n2841.833\n          3.0K\n          \n    Green Tea\n1339\n1476\n1398.750\n          1.5K\n          \n    Lemon\n3851\n4418\n4080.833\n          4.4K\n          \n    Mint\n1388\n1669\n1519.167\n          1.5K\n          \n    Regular Espresso\n890\n1218\n1023.417\n          1.1K"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-interactive-sparklines",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#plotting-interactive-sparklines",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Plotting interactive sparklines",
+    "text": "Plotting interactive sparklines\nSimilar to gtExtras, to plot an interactive sparklines by using reactablefmtr package we need to prepare the list field by using the code chunk below.\n\nreport &lt;- report %&gt;%\n  group_by(Product) %&gt;%\n  summarize(`Monthly Sales` = list(Sales))\n\nNext, react_sparkline will be to plot the sparklines as shown below.\n\nreactable(\n  report,\n  columns = list(\n    Product = colDef(maxWidth = 200),\n    `Monthly Sales` = colDef(\n      cell = react_sparkline(report)\n    )\n  )\n)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#changing-the-pagesize",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#changing-the-pagesize",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Changing the pagesize",
+    "text": "Changing the pagesize\nBy default the pagesize is 10. In the code chunk below, arguments defaultPageSize is used to change the default setting.\n\nreactable(\n  report,\n  defaultPageSize = 13,\n  columns = list(\n    Product = colDef(maxWidth = 200),\n    `Monthly Sales` = colDef(\n      cell = react_sparkline(report)\n    )\n  )\n)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-points-and-labels",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-points-and-labels",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Adding points and labels",
+    "text": "Adding points and labels\nIn the code chunk below highlight_points argument is used to show the minimum and maximum values points and label argument is used to label first and last values.\n\nreactable(\n  report,\n  defaultPageSize = 13,\n  columns = list(\n    Product = colDef(maxWidth = 200),\n    `Monthly Sales` = colDef(\n      cell = react_sparkline(\n        report,\n        highlight_points = highlight_points(\n          min = \"red\", max = \"blue\"),\n        labels = c(\"first\", \"last\")\n        )\n    )\n  )\n)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-reference-line",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-reference-line",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Adding reference line",
+    "text": "Adding reference line\nIn the code chunk below statline argument is used to show the mean line.\n\nreactable(\n  report,\n  defaultPageSize = 13,\n  columns = list(\n    Product = colDef(maxWidth = 200),\n    `Monthly Sales` = colDef(\n      cell = react_sparkline(\n        report,\n        highlight_points = highlight_points(\n          min = \"red\", max = \"blue\"),\n        statline = \"mean\"\n        )\n    )\n  )\n)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-bandline",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#adding-bandline",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Adding bandline",
+    "text": "Adding bandline\nInstead adding reference line, bandline can be added by using the bandline argument.\n\nreactable(\n  report,\n  defaultPageSize = 13,\n  columns = list(\n    Product = colDef(maxWidth = 200),\n    `Monthly Sales` = colDef(\n      cell = react_sparkline(\n        report,\n        highlight_points = highlight_points(\n          min = \"red\", max = \"blue\"),\n        line_width = 1,\n        bandline = \"innerquartiles\",\n        bandline_color = \"green\"\n        )\n    )\n  )\n)"
+  },
+  {
+    "objectID": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#changing-from-sparkline-to-sparkbar",
+    "href": "Hands-On_Ex/Hands-on_Ex10/Hands-on_Ex10.html#changing-from-sparkline-to-sparkbar",
+    "title": "Hands-on Exercise 10: Information Dashboard Design: R methods",
+    "section": "Changing from sparkline to sparkbar",
+    "text": "Changing from sparkline to sparkbar\nInstead of displaying the values as sparklines, we can display them as sparkbars as shiwn below.\n\nreactable(\n  report,\n  defaultPageSize = 13,\n  columns = list(\n    Product = colDef(maxWidth = 200),\n    `Monthly Sales` = colDef(\n      cell = react_sparkbar(\n        report,\n        highlight_bars = highlight_bars(\n          min = \"red\", max = \"blue\"),\n        bandline = \"innerquartiles\",\n        statline = \"mean\")\n    )\n  )\n)"
   }
 ]
