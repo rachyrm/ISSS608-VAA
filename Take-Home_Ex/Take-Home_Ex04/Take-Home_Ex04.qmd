@@ -1,0 +1,301 @@
+---
+title: "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application"
+author: "Rachel Yee"
+date: "3 March 2024"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Project Objectives
+
+In this exercise, the focus is to create a prototype module report for our weather analysis project. Different types of analysis will be included under this report, including exploratory, confirmatory, and prediction. A UI design for R Shiny will also be drawn for an idea of what we want for the final dashboard. Only the wind category will be in this exercise, while my team members will take the other variables, such as Temperature and Rainfall.
+
+# Data Preparation
+
+## Installing and Launching Required R Packages
+
+```{r}
+pacman::p_load(ggrepel, patchwork, ggthemes, hrbrthemes, scales, viridis, 
+               lubridate, ggpmisc, forecast, ggthemes, gridExtra, readxl, knitr, 
+               data.table, CGPfunctions, ggHoriPlot, tidyverse, ggiraph, plotly, 
+               patchwork, DT, ggdist, ggridges, ggthemes, colorspace, 
+               ggstatsplot, readxl, performance, parameters, see, ungeviz, plotly,
+               crosstalk, DT, ggdist, ggridges, colorspace, gganimate, 
+               FunnelPlotR, readxl, gifski, gapminder, gganimate, ggpubr, ggplot2)
+```
+
+## Loading the Data
+
+The monthly data will be first imported. For this project, the years 2013 to 2023 will be studied, from the five main regions in Singapore: Central Region, East Region, North East Region, North Region and West Region.
+
+```{r}
+files <- list.files(pattern = "*.csv", full.names = TRUE)
+weatherdata <- rbindlist(lapply(files, fread, encoding = "UTF-8"))
+```
+
+## Data Wrangling
+
+In the below code chunk:
+
+-   unwanted columns will be deleted
+
+-   column names will be changed for easier understanding
+
+-   missing data will be replaced with NA
+
+-   convert data types to be appropriate
+
+```{r}
+weatherdata <- weatherdata %>% select(-c("Highest 60 Min Rainfall (mm)", "Highest 30 Min Rainfall (mm)","Highest 120 Min Rainfall (mm)"))
+
+new_column_names <- c("Station", "Year", "Month","Day","Rainfall","MeanTemp","MaxTemp","MinTemp","MeanWind","MaxWind")
+names(weatherdata) <- new_column_names
+
+weatherdata <- weatherdata %>%
+  mutate(across(where(is.character), ~na_if(., '\x97')))
+
+weatherdata <- weatherdata %>%
+  mutate(across(c(Rainfall,MeanTemp,MaxTemp,MinTemp,MeanWind,MaxWind), as.numeric))%>%
+  mutate(across(c(Year,Month,Day), as.character))
+```
+
+Sub-tables will be created in order to do further analysis. They will be categorized as follows:
+
+::: panel-tabset
+## Annual
+
+```{r}
+annual_avg_wind <- weatherdata %>%
+  group_by(Year) %>%
+  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))
+```
+
+## Monthly
+
+```{r}
+monthly_avg_wind <- weatherdata %>%
+  group_by(Year,Month) %>%
+  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))
+monthly_avg_wind$Month <- factor(monthly_avg_wind$Month,
+                                  levels = 1:12,
+                                  labels = 
+              c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug","Sept", "Oct", "Nov", "Dec"),
+                                  ordered = TRUE)
+```
+
+## Daily
+
+```{r}
+daily_avg_wind <- weatherdata %>%
+  group_by(Year,Month,Day) %>%
+  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))
+```
+:::
+
+## Dataset Overview
+
+```{r}
+summary(weatherdata)
+```
+
+# Exploratory Data Analysis
+
+## Wind across the Years by Regions
+
+```{r}
+annual_avg_wind_bystation <- weatherdata %>%
+  group_by(Year,Station) %>%
+  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))
+
+plot_ly(data = annual_avg_wind_bystation, 
+        x = ~Year, 
+        y = ~AnnualAverageMeanWind, 
+        color = ~Station)
+```
+
+The provided R code analyzes and visualizes annual average wind speeds across different weather stations, grouped by both the 'Year' and 'Station' variables. This interactive plot also allows users to hover over the chart for different features. The x-axis represents the years, the y-axis displays the annual average mean wind speeds, and different weather stations are distinguished by color. This visual representation allows for a dynamic exploration of how average wind speeds vary across years and different weather stations, providing valuable insights into the wind conditions.
+
+From the graph above, there is nothing unusual about the wind patterns other than Pulau Ubin in 2018 and 2019, and Admiralty in 2020 and 2021.
+
+## Boxplot
+
+```{r}
+p <- ggplot(weatherdata, aes(x = Station, y = MeanWind, fill = Station)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set3") +
+  labs(title = "Wind by Regions",
+       x = "Regions",
+       y = "Mean Wind") +
+  theme_minimal()
+
+p <- p + scale_x_discrete(labels = c("Newton" = "Central",
+                                      "Changi" = "East",
+                                      "Pulau Ubin" = "North East",
+                                      "Admiralty" = "North",
+                                      "Jurong (West)" = "West"))
+p <- ggplotly(p)
+p
+```
+
+From the results shown above, the areas ranging from lowest average wind speed to highest go as follows respectively: North-East, West, Central, and North and East.
+
+## Heatmap
+
+```{r}
+ggplotly(
+  ggplot(weatherdata, aes(Day, Year, fill = MeanWind)) +
+    geom_tile(color = "black", size = 0.1) +
+    facet_grid(~Station, scales = "free_y") +
+    theme_tufte(base_family = "Helvetica") +
+    scale_fill_gradient(name = "", low = "light yellow", high = "#003200") +
+    labs(x = NULL, y = NULL, title = "Wind throughout 2013-2023") +
+    theme(axis.ticks = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.title = element_text(size = 8),
+          legend.text = element_text(size = 6))
+    )
+```
+
+From the heatmap above, wind activity is observed to be elevated in Admiralty and Pulau Ubin, suggesting these areas experiencing higher average wind speeds compared to the rest of the areas in Singapore. In contrast, Newton exhibits the lowest wind activity, and this might be due to the area being in the center, with higher buildings surrounding the region, potentially influencing the wind speed.
+
+## Interactive Bubble Plot
+
+### Average Monthly Wind Speed through 2013-2023 by Region
+
+```{r}
+monthly_avg_wind_bystation <- weatherdata %>%
+  group_by(Year, Month, Station) %>%
+  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))
+
+monthly_avg_wind_bystation$Month <- factor(monthly_avg_wind_bystation$Month,
+                                  levels = 1:12,
+                                  labels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"),
+                                  ordered = TRUE)
+
+gg_wind <- ggplot(monthly_avg_wind_bystation, 
+                  aes(x = Month, 
+                      y = AnnualAverageMeanWind,
+                      size = AnnualAverageMeanWind,
+                      color = as.factor(Station))) +
+  geom_point(aes(size = AnnualAverageMeanWind, frame = Year),
+             alpha = 0.7) +
+  scale_size(range = c(2, 12)) +
+  labs(x = 'Month', 
+       y = 'Daily Mean Wind') + 
+  theme(legend.position = 'bottom') +
+  guides(color = guide_legend(title = "Year", 
+                              override.aes = list(size = 3),
+                              ncol = 1))
+
+ggplotly(gg_wind)
+```
+
+### Average Annual Wind Speed through 2013-2023 by Region
+
+```{r}
+avg_wind_by_year_station <- weatherdata %>%
+  group_by(Year, Station) %>%
+  summarize(AvgMeanWind = mean(MeanWind, na.rm = TRUE))
+
+gg <- ggplot(avg_wind_by_year_station, 
+             aes(x = Year, 
+                 y = AvgMeanWind,
+                 size = AvgMeanWind,
+                 color = Station)) +
+  geom_point(aes(size = AvgMeanWind, frame = Year),
+             alpha = 0.7) +
+  geom_line(aes(x = Year, y = AvgMeanWind),
+            data = avg_wind_by_year_station,
+            color = "black",
+            linetype = "dashed") +
+  scale_size(range = c(2, 12)) +
+  labs(x = 'Year', 
+       y = 'Mean Wind Speed',
+       title = 'Average Mean Wind Speed Over Years') + 
+  theme(legend.position='bottom') +
+  guides(color = guide_legend(title = "Station", 
+                             override.aes = list(size = 3),
+                             ncol = 1))
+
+ggplotly(gg)
+```
+
+## Line Trend
+
+```{r}
+ggplot(monthly_avg_wind, aes(x = factor(Month), y = AnnualAverageMeanWind, group = Year, color = factor(Year))) +
+  geom_line() +
+  geom_point() +
+  theme_minimal() +
+  scale_color_manual(values = rainbow(length(unique(monthly_avg_wind$Year)))) +
+  labs(title = "Monthly Average Wind Trends by Year", x = "Month", y = "Average Wind")
+```
+
+Like what was mentioned in the pamphlet from Ministry of Sustainability and the Environment, there are no clear trends for wind speed as it is dependent on the environment.
+
+# Confirmatory Data Analysis
+
+```{r}
+annual_avg_wind$Year <- as.numeric(as.character(annual_avg_wind$Year))
+
+correlation_value <- cor(annual_avg_wind$Year, annual_avg_wind$AnnualAverageMeanWind)
+print(paste("Correlation Coefficient:", correlation_value))
+
+model <- lm(AnnualAverageMeanWind ~ as.numeric(Year), data = annual_avg_wind)
+summary(model)
+
+ggplot(annual_avg_wind, aes(x = as.numeric(Year), y = AnnualAverageMeanWind)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "blue") +
+  labs(title = "Long-term Wind Trend", x = "Year", y = "Average Wind", subtitle = paste("Correlation Coefficient:", round(correlation_value, 3)))+
+  scale_x_discrete(limits = seq(2013,2023,1))
+```
+
+Based on this analysis, there doesn't seem to be a significant trend in the annual average mean wind speed over the years in the dataset. The changes in wind speed from year to year are not statistically significant, suggesting that the wind speed has remained relatively stable over the period considered, at least within the sensitivity of this model.
+
+At the same time, the correlation coefficient of 0.248 indicates a weak positive correlation between the year and the annual average mean wind speed. This suggests that as the years increase, there is a slight tendency for the wind speed to also increase, but the relationship is not strong.
+
+# Predictive Analysis
+
+```{r}
+monthly_avg_wind$Month <- factor(monthly_avg_wind$Month, levels = 1:12,
+                                labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+ts_data <- ts(monthly_avg_wind$AnnualAverageMeanWind, start = c(2013, 1), frequency = 12)
+
+ggplot() +
+  geom_line(aes(x = time(ts_data), y = ts_data), color = "blue") +
+  xlab("Year") +
+  ylab("Average Wind") +
+  ggtitle("Time Series Plot of Monthly Average Wind Speed") +
+  scale_x_discrete(limits = seq(2013,2023,1))
+
+arima_model <- auto.arima(ts_data)
+
+forecast_result <- forecast(arima_model, h = 36)
+
+print(forecast_result)
+```
+
+# UI Design
+
+![](images/ui%20design.jpg)
+
+![](images/ui%20design%202.jpg)
+
+The proposed dashboard for Singapore's weather analysis will include 3 main sections:
+
+-   Exploratory
+
+-   Confirmatory
+
+-   Prediction
+
+This interactive user interface will feature drop-down menus for each categories: Temperature, Rainfall, and Wind. A slider will also be included to offer users an option to drag from 2013-2023 for a time-frame range selection. Lastly, a location option will be implemented with choices from the five main regions in Singapore: Central Region, North Region, North-East Region, East Region and West Region, based on the station that was chosen respectively: Newton, Admiralty, Pulau Ubin, Changi, Jurong (West).
+
+Under exploratory analysis, the dashboard will provide a scatter plot, boxplot, dynamic line, bar charts, and heatmaps which will change according to what users choose as a filter to manipulate what is shown on the screen. These descriptive visualizations will provide information through the display of trends throughout the years for selected regions. Additional features include interaction capabilities, such as zoom features and tooltips. For all the graphs, it will correspond to all the categories for this section since they will be under the same format. Confirmatory and predictive modeling will be similar, with different graphs such as a test for confirmatory, and a forecast for prediction purposes.

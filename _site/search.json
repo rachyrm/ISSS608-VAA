@@ -2014,5 +2014,82 @@
     "title": "In-Class Exercise 6: Horizon Plot",
     "section": "",
     "text": "averp &lt;- read_csv(\"data/AVERP.csv\") %&gt;%\n  mutate(`Date` = dmy(`Date`))\n\n\naverp %&gt;% \n  filter(Date &gt;= \"2018-01-01\") %&gt;%\n  ggplot() +\n  geom_horizon(aes(x = Date, y=Values), \n               origin = \"midpoint\", \n               horizonscale = 6)+\n  facet_grid(`Consumer Items`~.) +\n    theme_few() +\n  scale_fill_hcl(palette = 'RdBu') +\n  theme(panel.spacing.y=unit(0, \"lines\"), strip.text.y = element_text(\n    size = 5, angle = 0, hjust = 0),\n    legend.position = 'none',\n    axis.text.y = element_blank(),\n    axis.text.x = element_text(size=7),\n    axis.title.y = element_blank(),\n    axis.title.x = element_blank(),\n    axis.ticks.y = element_blank(),\n    panel.border = element_blank()\n    ) +\n    scale_x_date(expand=c(0,0), date_breaks = \"3 month\", date_labels = \"%b%y\") +\n  ggtitle('Average Retail Prices of Selected Consumer Items (Jan 2018 to Dec 2022)')"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html",
+    "title": "In-class Exercise 7",
+    "section": "",
+    "text": "pacman::p_load(sf, terra, gstat, tmap, viridis, tidyverse)\n\n\nrfstations &lt;- read_csv(\"data/aspatial/RainfallStation.csv\")\n\n\nrfdata &lt;- read_csv(\"data/aspatial/DAILYDATA_202402.csv\") %&gt;%\n  select(c(1,5)) %&gt;%\n  group_by(Station) %&gt;%\n  summarise(MONTHSUM = sum(`Daily Rainfall Total (mm)`)) %&gt;%\n  ungroup()\n\n\nrfdata &lt;- rfdata %&gt;%\n  left_join(rfstations)\n\n\nrfdata_sf &lt;- st_as_sf(rfdata,\n                      coords = c(\"Longitude\",\n                                 \"Latitude\"),\n                      crs=4326) %&gt;%\n  st_transform(crs = 3414)\n\n\nmpsz2019 &lt;- st_read(dsn = \"data/geospatial\",\n                    layer = \"MPSZ-2019\") %&gt;%\n  st_transform(crs = 3414)\n\nReading layer `MPSZ-2019' from data source \n  `C:\\Users\\Test\\OneDrive - Singapore Management University\\Desktop\\rachyrm\\ISSS608-VAA\\In-Class_Ex\\In-Class_Ex07\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 332 features and 6 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775\nGeodetic CRS:  WGS 84\n\n\n\ntmap_options(check.and.fix = TRUE)\ntmap_mode(\"view\")\ntm_shape(mpsz2019) +\n  tm_borders() +\ntm_shape(rfdata_sf) +\n  tm_dots(col = 'MONTHSUM')\n\n\n\n\n\ntmap_mode(\"plot\")\n\n\ngrid &lt;- terra::rast(mpsz2019,\n                    nrows = 690,\n                    ncols = 1075)\n\nxy &lt;- terra::xyFromCell(grid,\n                       1:ncell(grid))"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "",
+    "text": "In this exercise, the focus is to create a prototype module report for our weather analysis project. Different types of analysis will be included under this report, including exploratory, confirmatory, and prediction. A UI design for R Shiny will also be drawn for an idea of what we want for the final dashboard. Only the wind category will be in this exercise, while my team members will take the other variables, such as Temperature and Rainfall."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#installing-and-launching-required-r-packages",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#installing-and-launching-required-r-packages",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Installing and Launching Required R Packages",
+    "text": "Installing and Launching Required R Packages\n\npacman::p_load(ggrepel, patchwork, ggthemes, hrbrthemes, scales, viridis, \n               lubridate, ggpmisc, forecast, ggthemes, gridExtra, readxl, knitr, \n               data.table, CGPfunctions, ggHoriPlot, tidyverse, ggiraph, plotly, \n               patchwork, DT, ggdist, ggridges, ggthemes, colorspace, \n               ggstatsplot, readxl, performance, parameters, see, ungeviz, plotly,\n               crosstalk, DT, ggdist, ggridges, colorspace, gganimate, \n               FunnelPlotR, readxl, gifski, gapminder, gganimate, ggpubr, ggplot2)"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#loading-the-data",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#loading-the-data",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Loading the Data",
+    "text": "Loading the Data\nThe monthly data will be first imported. For this project, the years 2013 to 2023 will be studied, from the five main regions in Singapore: Central Region, East Region, North East Region, North Region and West Region.\n\nfiles &lt;- list.files(pattern = \"*.csv\", full.names = TRUE)\nweatherdata &lt;- rbindlist(lapply(files, fread, encoding = \"UTF-8\"))"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#data-wrangling",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#data-wrangling",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Data Wrangling",
+    "text": "Data Wrangling\nIn the below code chunk:\n\nunwanted columns will be deleted\ncolumn names will be changed for easier understanding\nmissing data will be replaced with NA\nconvert data types to be appropriate\n\n\nweatherdata &lt;- weatherdata %&gt;% select(-c(\"Highest 60 Min Rainfall (mm)\", \"Highest 30 Min Rainfall (mm)\",\"Highest 120 Min Rainfall (mm)\"))\n\nnew_column_names &lt;- c(\"Station\", \"Year\", \"Month\",\"Day\",\"Rainfall\",\"MeanTemp\",\"MaxTemp\",\"MinTemp\",\"MeanWind\",\"MaxWind\")\nnames(weatherdata) &lt;- new_column_names\n\nweatherdata &lt;- weatherdata %&gt;%\n  mutate(across(where(is.character), ~na_if(., '\\x97')))\n\nweatherdata &lt;- weatherdata %&gt;%\n  mutate(across(c(Rainfall,MeanTemp,MaxTemp,MinTemp,MeanWind,MaxWind), as.numeric))%&gt;%\n  mutate(across(c(Year,Month,Day), as.character))\n\nSub-tables will be created in order to do further analysis. They will be categorized as follows:\n\nAnnualMonthlyDaily\n\n\n\nannual_avg_wind &lt;- weatherdata %&gt;%\n  group_by(Year) %&gt;%\n  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))\n\n\n\n\nmonthly_avg_wind &lt;- weatherdata %&gt;%\n  group_by(Year,Month) %&gt;%\n  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))\nmonthly_avg_wind$Month &lt;- factor(monthly_avg_wind$Month,\n                                  levels = 1:12,\n                                  labels = \n              c(\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"June\", \"July\", \"Aug\",\"Sept\", \"Oct\", \"Nov\", \"Dec\"),\n                                  ordered = TRUE)\n\n\n\n\ndaily_avg_wind &lt;- weatherdata %&gt;%\n  group_by(Year,Month,Day) %&gt;%\n  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#dataset-overview",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#dataset-overview",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\n\nsummary(weatherdata)\n\n   Station              Year              Month               Day           \n Length:19629       Length:19629       Length:19629       Length:19629      \n Class :character   Class :character   Class :character   Class :character  \n Mode  :character   Mode  :character   Mode  :character   Mode  :character  \n                                                                            \n                                                                            \n                                                                            \n                                                                            \n    Rainfall          MeanTemp        MaxTemp         MinTemp     \n Min.   :  0.000   Min.   :22.20   Min.   :22.80   Min.   :20.00  \n 1st Qu.:  0.000   1st Qu.:26.90   1st Qu.:30.90   1st Qu.:24.10  \n Median :  0.200   Median :27.70   Median :32.00   Median :25.00  \n Mean   :  6.327   Mean   :27.66   Mean   :31.75   Mean   :25.01  \n 3rd Qu.:  6.000   3rd Qu.:28.50   3rd Qu.:32.90   3rd Qu.:25.90  \n Max.   :210.600   Max.   :30.80   Max.   :36.80   Max.   :29.00  \n NA's   :460       NA's   :649     NA's   :587     NA's   :587    \n    MeanWind         MaxWind      \n Min.   : 0.400   Min.   :  8.30  \n 1st Qu.: 5.800   1st Qu.: 27.00  \n Median : 7.200   Median : 31.70  \n Mean   : 7.984   Mean   : 32.77  \n 3rd Qu.: 9.400   3rd Qu.: 37.40  \n Max.   :31.300   Max.   :105.50  \n NA's   :800      NA's   :796"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#wind-across-the-years-by-regions",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#wind-across-the-years-by-regions",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Wind across the Years by Regions",
+    "text": "Wind across the Years by Regions\n\nannual_avg_wind_bystation &lt;- weatherdata %&gt;%\n  group_by(Year,Station) %&gt;%\n  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))\n\nplot_ly(data = annual_avg_wind_bystation, \n        x = ~Year, \n        y = ~AnnualAverageMeanWind, \n        color = ~Station)\n\n\n\n\n\nThe provided R code analyzes and visualizes annual average wind speeds across different weather stations, grouped by both the ‘Year’ and ‘Station’ variables. This interactive plot also allows users to hover over the chart for different features. The x-axis represents the years, the y-axis displays the annual average mean wind speeds, and different weather stations are distinguished by color. This visual representation allows for a dynamic exploration of how average wind speeds vary across years and different weather stations, providing valuable insights into the wind conditions.\nFrom the graph above, there is nothing unusual about the wind patterns other than Pulau Ubin in 2018 and 2019, and Admiralty in 2020 and 2021."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#boxplot",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#boxplot",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Boxplot",
+    "text": "Boxplot\n\np &lt;- ggplot(weatherdata, aes(x = Station, y = MeanWind, fill = Station)) +\n  geom_boxplot() +\n  scale_fill_brewer(palette = \"Set3\") +\n  labs(title = \"Wind by Regions\",\n       x = \"Regions\",\n       y = \"Mean Wind\") +\n  theme_minimal()\n\np &lt;- p + scale_x_discrete(labels = c(\"Newton\" = \"Central\",\n                                      \"Changi\" = \"East\",\n                                      \"Pulau Ubin\" = \"North East\",\n                                      \"Admiralty\" = \"North\",\n                                      \"Jurong (West)\" = \"West\"))\np &lt;- ggplotly(p)\np\n\n\n\n\n\nFrom the results shown above, the areas ranging from lowest average wind speed to highest go as follows respectively: North-East, West, Central, and North and East."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#heatmap",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#heatmap",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Heatmap",
+    "text": "Heatmap\n\nggplotly(\n  ggplot(weatherdata, aes(Day, Year, fill = MeanWind)) +\n    geom_tile(color = \"black\", size = 0.1) +\n    facet_grid(~Station, scales = \"free_y\") +\n    theme_tufte(base_family = \"Helvetica\") +\n    scale_fill_gradient(name = \"\", low = \"light yellow\", high = \"#003200\") +\n    labs(x = NULL, y = NULL, title = \"Wind throughout 2013-2023\") +\n    theme(axis.ticks = element_blank(),\n          plot.title = element_text(hjust = 0.5),\n          legend.title = element_text(size = 8),\n          legend.text = element_text(size = 6))\n    )\n\n\n\n\n\nFrom the heatmap above, wind activity is observed to be elevated in Admiralty and Pulau Ubin, suggesting these areas experiencing higher average wind speeds compared to the rest of the areas in Singapore. In contrast, Newton exhibits the lowest wind activity, and this might be due to the area being in the center, with higher buildings surrounding the region, potentially influencing the wind speed."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#interactive-bubble-plot",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#interactive-bubble-plot",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Interactive Bubble Plot",
+    "text": "Interactive Bubble Plot\n\nAverage Monthly Wind Speed through 2013-2023 by Region\n\nmonthly_avg_wind_bystation &lt;- weatherdata %&gt;%\n  group_by(Year, Month, Station) %&gt;%\n  summarise(AnnualAverageMeanWind = mean(MeanWind, na.rm = TRUE))\n\nmonthly_avg_wind_bystation$Month &lt;- factor(monthly_avg_wind_bystation$Month,\n                                  levels = 1:12,\n                                  labels = c(\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"June\", \"July\", \"Aug\", \"Sept\", \"Oct\", \"Nov\", \"Dec\"),\n                                  ordered = TRUE)\n\ngg_wind &lt;- ggplot(monthly_avg_wind_bystation, \n                  aes(x = Month, \n                      y = AnnualAverageMeanWind,\n                      size = AnnualAverageMeanWind,\n                      color = as.factor(Station))) +\n  geom_point(aes(size = AnnualAverageMeanWind, frame = Year),\n             alpha = 0.7) +\n  scale_size(range = c(2, 12)) +\n  labs(x = 'Month', \n       y = 'Daily Mean Wind') + \n  theme(legend.position = 'bottom') +\n  guides(color = guide_legend(title = \"Year\", \n                              override.aes = list(size = 3),\n                              ncol = 1))\n\nggplotly(gg_wind)\n\n\n\n\n\n\n\nAverage Annual Wind Speed through 2013-2023 by Region\n\navg_wind_by_year_station &lt;- weatherdata %&gt;%\n  group_by(Year, Station) %&gt;%\n  summarize(AvgMeanWind = mean(MeanWind, na.rm = TRUE))\n\ngg &lt;- ggplot(avg_wind_by_year_station, \n             aes(x = Year, \n                 y = AvgMeanWind,\n                 size = AvgMeanWind,\n                 color = Station)) +\n  geom_point(aes(size = AvgMeanWind, frame = Year),\n             alpha = 0.7) +\n  geom_line(aes(x = Year, y = AvgMeanWind),\n            data = avg_wind_by_year_station,\n            color = \"black\",\n            linetype = \"dashed\") +\n  scale_size(range = c(2, 12)) +\n  labs(x = 'Year', \n       y = 'Mean Wind Speed',\n       title = 'Average Mean Wind Speed Over Years') + \n  theme(legend.position='bottom') +\n  guides(color = guide_legend(title = \"Station\", \n                             override.aes = list(size = 3),\n                             ncol = 1))\n\nggplotly(gg)"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#line-trend",
+    "href": "Take-Home_Ex/Take-Home_Ex04/Take-Home_Ex04.html#line-trend",
+    "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
+    "section": "Line Trend",
+    "text": "Line Trend\n\nggplot(monthly_avg_wind, aes(x = factor(Month), y = AnnualAverageMeanWind, group = Year, color = factor(Year))) +\n  geom_line() +\n  geom_point() +\n  theme_minimal() +\n  scale_color_manual(values = rainbow(length(unique(monthly_avg_wind$Year)))) +\n  labs(title = \"Monthly Average Wind Trends by Year\", x = \"Month\", y = \"Average Wind\")\n\n\n\n\nLike what was mentioned in the pamphlet from Ministry of Sustainability and the Environment, there are no clear trends for wind speed as it is dependent on the environment."
   }
 ]
