@@ -2091,5 +2091,19 @@
     "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
     "section": "Line Trend",
     "text": "Line Trend\n\nggplot(monthly_avg_wind, aes(x = factor(Month), y = AnnualAverageMeanWind, group = Year, color = factor(Year))) +\n  geom_line() +\n  geom_point() +\n  theme_minimal() +\n  scale_color_manual(values = rainbow(length(unique(monthly_avg_wind$Year)))) +\n  labs(title = \"Monthly Average Wind Trends by Year\", x = \"Month\", y = \"Average Wind\")\n\n\n\n\nLike what was mentioned in the pamphlet from Ministry of Sustainability and the Environment, there are no clear trends for wind speed as it is dependent on the environment."
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex09/In-Class_Ex09.html",
+    "href": "In-Class_Ex/In-Class_Ex09/In-Class_Ex09.html",
+    "title": "In-class Exercise 9",
+    "section": "",
+    "text": "pacman::p_load(igraph, tidygraph, ggraph, visNetwork, lubridate, clock, tidyverse, graphlayouts)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex09/In-Class_Ex09.html#data-preparation",
+    "href": "In-Class_Ex/In-Class_Ex09/In-Class_Ex09.html#data-preparation",
+    "title": "In-class Exercise 9",
+    "section": "Data preparation",
+    "text": "Data preparation\n\nGAStech_edges_aggregated &lt;- GAStech_edges %&gt;%\n  left_join(GAStech_nodes, by = c(\"sourceLabel\" = \"label\")) %&gt;%\n  rename(from = id) %&gt;%\n  left_join(GAStech_nodes, by = c(\"targetLabel\" = \"label\")) %&gt;%\n  rename(to = id) %&gt;%\n  filter(MainSubject == \"Work related\") %&gt;%\n  group_by(from, to) %&gt;%\n    summarise(weight = n()) %&gt;%\n  filter(from!=to) %&gt;%\n  filter(weight &gt; 1) %&gt;%\n  ungroup()\n\n\nvisNetwork(GAStech_nodes, \n           GAStech_edges_aggregated)\n\n\n\n\n\n\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %&gt;%\n  visIgraphLayout(layout = \"layout_with_fr\") %&gt;%\n  visOptions(highlightNearest = TRUE,\n             nodesIdSelection = TRUE) %&gt;%\n  visLegend() %&gt;%\n  visLayout(randomSeed = 123)"
   }
 ]
